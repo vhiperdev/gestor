@@ -18,8 +18,8 @@ interface Company {
 
 export const CompaniesDropdown = () => {
   const [company, setCompany] = useState<Company>({
-    name: "Acme Co.",
-    location: "Palo Alto, CA",
+    name: "diegobfl",
+    location: "Brazil",
     logo: <AcmeIcon />,
   });
   return (
@@ -46,29 +46,8 @@ export const CompaniesDropdown = () => {
         onAction={(e) => {
           if (e === "1") {
             setCompany({
-              name: "Facebook",
-              location: "San Fransico, CA",
-              logo: <AcmeIcon />,
-            });
-          }
-          if (e === "2") {
-            setCompany({
-              name: "Instagram",
-              location: "Austin, Tx",
-              logo: <AcmeLogo />,
-            });
-          }
-          if (e === "3") {
-            setCompany({
-              name: "Twitter",
-              location: "Brooklyn, NY",
-              logo: <AcmeIcon />,
-            });
-          }
-          if (e === "4") {
-            setCompany({
-              name: "Acme Co.",
-              location: "Palo Alto, CA",
+              name: "diegobfl",
+              location: "Brazil",
               logo: <AcmeIcon />,
             });
           }
@@ -79,46 +58,13 @@ export const CompaniesDropdown = () => {
           <DropdownItem
             key="1"
             startContent={<AcmeIcon />}
-            description="San Fransico, CA"
+            description="Brazil"
             classNames={{
               base: "py-4",
               title: "text-base font-semibold",
             }}
           >
-            Facebook
-          </DropdownItem>
-          <DropdownItem
-            key="2"
-            startContent={<AcmeLogo />}
-            description="Austin, Tx"
-            classNames={{
-              base: "py-4",
-              title: "text-base font-semibold",
-            }}
-          >
-            Instagram
-          </DropdownItem>
-          <DropdownItem
-            key="3"
-            startContent={<AcmeIcon />}
-            description="Brooklyn, NY"
-            classNames={{
-              base: "py-4",
-              title: "text-base font-semibold",
-            }}
-          >
-            Twitter
-          </DropdownItem>
-          <DropdownItem
-            key="4"
-            startContent={<AcmeIcon />}
-            description="Palo Alto, CA"
-            classNames={{
-              base: "py-4",
-              title: "text-base font-semibold",
-            }}
-          >
-            Acme Co.
+            diegobfl
           </DropdownItem>
         </DropdownSection>
       </DropdownMenu>
