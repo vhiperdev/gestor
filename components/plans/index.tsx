@@ -10,6 +10,7 @@ import { UsersIcon } from "../icons/breadcrumb/users-icon";
 import { SettingsIcon } from "../icons/sidebar/settings-icon";
 import { TableWrapper } from "../table/table";
 import { AddPlan } from "./add-plan";
+import PlanTable from "./table/table-plan";
 
 export const Plans = () => {
   return (
@@ -36,20 +37,13 @@ export const Plans = () => {
       <h3 className="text-xl font-semibold">All Plans</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-          <Input
-            classNames={{
-              input: "w-full",
-              mainWrapper: "w-full",
-            }}
-            placeholder="Search Plan"
-          />
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddPlan />
+          <AddPlan userId="170323"/>
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        <TableWrapper />
+        <PlanTable />
       </div>
     </div>
   );

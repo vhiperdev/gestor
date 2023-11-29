@@ -18,6 +18,10 @@ export const SidebarWrapper = () => {
   const router = useRouter();
   const { collapsed, setCollapsed } = useSidebarContext();
 
+  const role = localStorage.getItem('role');
+  console.log(role)
+
+
   return (
     <aside className="h-screen z-[202] sticky top-0">
       {collapsed ? (
@@ -70,21 +74,24 @@ export const SidebarWrapper = () => {
                 isActive={router.pathname === "/scansession"}
                 title="Scan Session"
                 icon={<DevIcon />}
+                href="sessions"
               />
               <SidebarItem
                 isActive={router.pathname === "/templatewhatsapp"}
                 title="Template Whatsapp"
                 icon={<ViewIcon />}
+                href="templateWhatsapp"
               />
             </SidebarMenu>
-
-            <SidebarMenu title="Owner">
+            {role === 'admin' && <SidebarMenu title="Owner">
               <SidebarItem
                 isActive={router.pathname === "/accounts"}
                 title="Account"
                 icon={<DevIcon />}
+                href="accounts"
               />
-            </SidebarMenu>
+            </SidebarMenu>}
+
           </div>
         </div>
       </div>

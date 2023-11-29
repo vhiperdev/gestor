@@ -10,6 +10,7 @@ import { UsersIcon } from "../icons/breadcrumb/users-icon";
 import { SettingsIcon } from "../icons/sidebar/settings-icon";
 import { TableWrapper } from "../table/table";
 import { AddProduct } from "./add-product";
+import ProductTable from "./table/table-product";
 
 export const Products = () => {
   return (
@@ -36,20 +37,20 @@ export const Products = () => {
       <h3 className="text-xl font-semibold">All Product</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-          <Input
+          {/* <Input
             classNames={{
               input: "w-full",
               mainWrapper: "w-full",
             }}
             placeholder="Search Plan"
-          />
+          /> */}
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           <AddProduct />
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        <TableWrapper />
+        <ProductTable />
       </div>
     </div>
   );
