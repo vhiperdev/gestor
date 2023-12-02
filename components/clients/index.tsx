@@ -16,7 +16,8 @@ import AddClient from "./add-client";
 
 export const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
- 
+  const uid = localStorage.getItem('id');
+  console.log('dsaidusadao', uid)
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
