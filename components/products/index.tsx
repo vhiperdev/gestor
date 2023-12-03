@@ -13,6 +13,7 @@ import { AddProduct } from "./add-product";
 import ProductTable from "./table/table-product";
 
 export const Products = () => {
+  const uid = localStorage.getItem("id");
   return (
     <div className="my-14 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
       <ul className="flex">
@@ -46,7 +47,7 @@ export const Products = () => {
           /> */}
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddProduct />
+          <AddProduct userId={uid} />
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">

@@ -9,44 +9,44 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export const AddProduct = () => {
+export const AddProduct = ({ userId }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [ productName, setProductName ] = useState('')
-  const [ productPrice, setProductPrice ] = useState('')
+  const [productName, setProductName] = useState("");
+  const [productPrice, setProductPrice] = useState("");
 
   const handleAddProduct = () => {
     const objectWithData = {
-      userId: 'username',
+      userId: userId,
       productName: productName,
-      productPrice: productPrice
+      productPrice: productPrice,
     };
 
-    fetch('/api/product/addProduct', {
-      method: 'POST',
+    fetch("/api/product/addProduct", {
+      method: "POST",
       headers: {
-        'X-Authorization': process.env.API_KEY,
-        'Content-Type': 'application/json'
+        "X-Authorization": process.env.API_KEY,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(objectWithData),
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.code === 200) {
-          successNotify('Product successfully added');
+          successNotify("Product successfully added");
         } else if (data.code === 400) {
           failedNotify(data.message);
         } else if (data.code === 500) {
           failedNotify(data.sqlMessage);
         }
       });
-  }
+  };
 
   const successNotify = (message) => {
     toast.success(message, {
-      position: toast.POSITION.TOP_RIGHT
+      position: toast.POSITION.TOP_RIGHT,
     });
     setTimeout(() => {
       window.location.reload();
@@ -63,12 +63,12 @@ export const AddProduct = () => {
   const resetState = () => {
     setProductName("");
     setProductPrice("");
-  }
+  };
 
   return (
     <div>
       <>
-      <ToastContainer
+        <ToastContainer
           position="top-right"
           autoClose={2800}
           hideProgressBar={false}
@@ -78,7 +78,8 @@ export const AddProduct = () => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="dark" />
+          theme="dark"
+        />
         <Button onPress={onOpen} color="primary">
           Add Product
         </Button>
@@ -94,17 +95,29 @@ export const AddProduct = () => {
                   Add Product
                 </ModalHeader>
                 <ModalBody>
-                  <Input isRequired label="Product Name" variant="bordered" onChange={(e) => {setProductName(e.target.value)}}/>
-                  <Input isRequired type="number"
+                  <Input
+                    isRequired
+                    label="Product Name"
+                    variant="bordered"
+                    onChange={(e) => {
+                      setProductName(e.target.value);
+                    }}
+                  />
+                  <Input
+                    isRequired
+                    type="number"
                     label="Price"
                     placeholder="0.00"
                     labelPlacement="outside"
-                    onChange={(e) => {setProductPrice(e.target.value)}}
+                    onChange={(e) => {
+                      setProductPrice(e.target.value);
+                    }}
                     startContent={
                       <div className="pointer-events-none flex items-center">
                         <span className="text-default-400 text-small">R$</span>
                       </div>
-                    } />
+                    }
+                  />
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="flat" onClick={onClose}>
