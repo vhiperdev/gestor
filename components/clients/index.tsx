@@ -21,6 +21,7 @@ import ExportExcel from "./excel-export";
 
 export const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [clients, setClients] = useState([]);
   const uid = localStorage.getItem("id");
 
@@ -41,6 +42,7 @@ export const Clients = () => {
   useEffect(() => {
     handleClientsApi();
   }, []);
+
 
   const handleOpenModal = () => {
     setIsModalOpen(true);

@@ -19,6 +19,9 @@ import { useRouter } from 'next/router';
 export const UserDropdown = (props) => {
   const router = useRouter();
 
+  const profileImage = localStorage.getItem('picture')
+  const username = localStorage.getItem('name')
+
   const handleLogOut = async () => {
     clearLocalStorage();
     router.push('/api/auth/logout');
@@ -41,7 +44,7 @@ export const UserDropdown = (props) => {
             as="button"
             color="secondary"
             size="md"
-            src={props.picture}
+            src={profileImage}
           />
         </DropdownTrigger>
       </NavbarItem>
@@ -54,7 +57,7 @@ export const UserDropdown = (props) => {
           className="flex flex-col justify-start w-full items-start"
         >
           <p>Signed in as</p>
-          <p>{props.name}</p>
+          <p>{username}</p>
         </DropdownItem>
         {/* <DropdownItem key="settings">My Settings</DropdownItem>
         <DropdownItem key="team_settings">Team Settings</DropdownItem>
@@ -65,9 +68,9 @@ export const UserDropdown = (props) => {
         <DropdownItem key="logout" color="danger" className="text-danger " onClick={handleLogOut}>
           Log Out
         </DropdownItem>
-        <DropdownItem key="switch">
+        {/* <DropdownItem key="switch">
           <DarkModeSwitch />
-        </DropdownItem>
+        </DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );

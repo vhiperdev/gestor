@@ -11,7 +11,7 @@ import {
 import React, { useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import io from "socket.io-client";
+import io from 'Socket.IO-client'
 
 
 
@@ -21,55 +21,64 @@ export const AddSessions = () => {
   const [isImageVisible, setIsImageVisible] = React.useState(false);
   const [isQrCodeVisible, setIsQrCodeVisible] = React.useState(false);
 
-  const SOCKET_URL = '/api/whatsapp/SocketHandler'; // Ganti dengan URL server Anda
+  // const SOCKET_URL = '/api/whatsapp'; // Ganti dengan URL server Anda
 
-  let socket = io(SOCKET_URL);
+  // let socket = io(SOCKET_URL);
+  let socket
 
 
   useEffect(() => {
-    socketInitializer();
+    // socketInitializer();
 
   },)
 
+  // const socketInitializer = async () => {
+  //   await fetch('/api/whatsapp/SocketHandler')
+  //   // socket = io(url)
 
-  const socketInitializer = async () => {
-    await fetch('/api/whatsapp/SocketHandler')
-    socket = io()
+  //   // socket.on('connect', () => {
+  //   //   console.log('connected socket nya ni')
+  //   // })
+  // }
 
-    socket.on('connect', () => {
-      // console.log('connected')
-    })
+  // const socketInitializer = async () => {
+  //   await fetch('/api/whatsapp/SocketHandler')
+  //   const socket = io('http://localhost:3000')
 
-    socket.once('qrCodeResponse', (response) => {
+  //   socket.on('connect', () => {
+  //     // console.log('connected')
+  //   })
 
-      if (isQrCodeVisible === false ) {
-        setQrCode(response);
-        successNotify("Succesfully generated QR Code");
-        setIsImageVisible(true);
+  //   socket.once('qrCodeResponse', (response) => {
 
-        //for stoping the loop emit
-        setIsQrCodeVisible(true);
-      }
+  //     if (isQrCodeVisible === false ) {
+  //       setQrCode(response);
+  //       successNotify("Succesfully generated QR Code");
+  //       setIsImageVisible(true);
 
-    });
-    socket.once('connectedSession', (response) => {
-      if (response === process.env.SESSION_NAME) {
-        successNotify("Succesfully connected to session");
-        resetState();
+  //       //for stoping the loop emit
+  //       setIsQrCodeVisible(true);
+  //     }
 
-        //set timeout 2,5 second before reload
-        setTimeout(() => {
-          window.location.reload();
-        }, 2500)
-      }
-    });
+  //   });
+  //   socket.once('connectedSession', (response) => {
+  //     if (response === process.env.SESSION_NAME) {
+  //       successNotify("Succesfully connected to session");
+  //       resetState();
+
+  //       //set timeout 2,5 second before reload
+  //       setTimeout(() => {
+  //         window.location.reload();
+  //       }, 2500)
+  //     }
+  //   });
 
 
 
-    socket.on('messageError', (error: string) => {
-      failedNotify(error);
-    });
-  }
+  //   socket.on('messageError', (error: string) => {
+  //     failedNotify(error);
+  //   });
+  // }
 
   const successNotify = (message) => {
     toast.success(message, {
@@ -97,9 +106,39 @@ export const AddSessions = () => {
   }
 
   function handlerAddSession() {
-    const session = process.env.SESSION_NAME
+    const session = localStorage.getItem('name')
 
-    socket.emit('qrCode', session);
+    // socket.emit('qrCode', session);
+
+    const objectWithData = {
+      session: session,
+    };
+
+    fetch('/api/whatsapp/createSession', {
+      method: 'POST',
+      headers: {
+        'X-Authorization': process.env.API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(objectWithData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code === 200) {
+          setQrCode(data.data);
+          successNotify("Succesfully generated QR Code");
+          setIsImageVisible(true);
+
+          setTimeout(() => {
+          successNotify("Succesfully Connected");
+            window.location.reload();
+          }, 8000);
+        } else if (data.code === 400) {
+          failedNotify(data.message);
+        } else if (data.code === 500) {
+          failedNotify(data.sqlMessage);
+        }
+      });
   }
 
   return (
@@ -115,7 +154,7 @@ export const AddSessions = () => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="dark" />
+          theme="light" />
 
         <Button onPress={onOpen} color="primary">
           Add Sessions

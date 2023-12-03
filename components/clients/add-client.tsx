@@ -79,11 +79,13 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
         }
       });
 
+
     // console.log(newClientInfo);
     onClose();
     setTimeout(() => {
       window.location.reload();
     }, 2500);
+
   };
 
   const formatCurrency = (value) => {
@@ -101,10 +103,10 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
     toast.success(message, {
       position: toast.POSITION.TOP_RIGHT,
     });
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 2500);
-    // resetState();
+    setTimeout(() => {
+      window.location.reload();
+    }, 2500);
+    resetState();
   };
 
   const failedNotify = (message) => {

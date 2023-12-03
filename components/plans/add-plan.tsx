@@ -78,7 +78,7 @@ export const AddPlan = ({ userId }) => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="dark" />
+          theme="light" />
         <Button onPress={onOpen} color="primary">
           Add Plan
         </Button>

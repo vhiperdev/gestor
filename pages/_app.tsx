@@ -11,7 +11,7 @@ import { UserProvider } from "@auth0/nextjs-auth0/client";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <UserProvider>
-      <NextThemesProvider defaultTheme="system" attribute="class">
+      <NextThemesProvider defaultTheme="light" attribute="class">
         <NextUIProvider>
           <ChakraProvider>
             <Layout>

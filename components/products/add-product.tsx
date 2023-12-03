@@ -78,8 +78,8 @@ export const AddProduct = ({ userId }) => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="dark"
-        />
+          theme="light" />
+
         <Button onPress={onOpen} color="primary">
           Add Product
         </Button>
