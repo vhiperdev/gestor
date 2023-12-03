@@ -77,7 +77,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
                                     const queryInsertDb = `insert into users VALUES('${data.data.user_id}', '${data.data.email}', '${data.data.nickname}', '${data.data.picture}', "", 1, 0, '${data.data.created_at}');`;
                                     executeQuery(queryInsertDb)
                                         .then((results) => {
-                                            //00 for today
+                                            //100 for today
                                             const queryTodayTemplateMessage = `INSERT INTO templatemessages VALUES (NULL, '${data.data.user_id}', 'Dear {name},
 
                                             We hope this message finds you well. We would like to inform you that your subscription with us has reached its expiration date as of today, {expired_date}. We greatly appreciate your continued support and would like to ensure uninterrupted access to our services.

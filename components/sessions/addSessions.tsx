@@ -154,7 +154,7 @@ export const AddSessions = () => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="dark" />
+          theme="light" />
 
         <Button onPress={onOpen} color="primary">
           Add Sessions

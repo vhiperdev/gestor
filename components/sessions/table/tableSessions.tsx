@@ -42,13 +42,13 @@ export const TableSessions = () => {
     <div className=" w-full flex flex-col gap-4">
       <Table aria-label="Example empty table">
         <TableHeader>
-          <TableColumn>ID</TableColumn>
+          {/* <TableColumn>ID</TableColumn> */}
           <TableColumn>NAME</TableColumn>
         </TableHeader>
         <TableBody>
           <TableRow key={sessions != null ? sessions['id'] : '-'}>
             <TableCell>{sessions != null ? sessions['id'] : '-'}</TableCell>
-            <TableCell>{sessions != null ? sessions['name'] : '-'}</TableCell>
+            {/* <TableCell>{sessions != null ? sessions['name'] : '-'}</TableCell> */}
           </TableRow>
 
         </TableBody>

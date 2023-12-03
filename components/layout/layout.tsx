@@ -41,6 +41,11 @@ export const Layout = ({ children }: Props) => {
 
   var userRole;
 
+  useEffect(() => {
+    
+  }, [])
+  
+
   const getUserRole = (email) => {
     fetch(`api/accounts/getAccountByEmail?email=${email}`, {
       headers: {

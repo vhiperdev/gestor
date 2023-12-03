@@ -77,7 +77,7 @@ export const DeleteSession = () => {
                     pauseOnFocusLoss
                     draggable
                     pauseOnHover
-                    theme="dark" />
+                    theme="light" />
 
                 <Button onPress={onOpen} color="danger">
                     Delete Session

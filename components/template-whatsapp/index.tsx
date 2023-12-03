@@ -178,7 +178,7 @@ export const TemplateWhatsapp = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark" />
+        theme="light" />
 
       <div className="my-14 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
         <ul className="flex">
