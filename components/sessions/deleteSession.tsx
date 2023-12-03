@@ -20,8 +20,8 @@ export const DeleteSession = () => {
 
 
     const handlerDeletSession = async () => {
-        const sessionName = "exampleSession"; // replace with your session name
-        fetch(`/api/whatsapp/deleteSession?sessionName=${process.env.SESSION_NAME}`, {
+        const sessionName = localStorage.getItem('name'); //
+        fetch(`/api/whatsapp/deleteSession?sessionName=${sessionName}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

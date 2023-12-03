@@ -73,8 +73,6 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
           failedNotify(data.sqlMessage);
         }
       });
-
-        console.log(newClientInfo)
     // onClose();
   };
 
@@ -90,10 +88,10 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
     toast.success(message, {
       position: toast.POSITION.TOP_RIGHT
     });
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 2500);
-    // resetState();
+    setTimeout(() => {
+      window.location.reload();
+    }, 2500);
+    resetState();
   };
 
   const failedNotify = (message) => {

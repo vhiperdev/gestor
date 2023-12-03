@@ -17,6 +17,8 @@ export const Sessions = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isButtonVisible, setIsButtonVisible] = React.useState(false);
 
+  const userName = localStorage.getItem('name');
+
   useEffect(() => {
     checkSession();
   }, []);
@@ -24,7 +26,7 @@ export const Sessions = () => {
 
 
   const checkSession = async () => {
-    fetch('/api/whatsapp/getAllSession', {
+    fetch(`/api/whatsapp/getSessionByUsername?session=${userName}`, {
       method: 'GET',
       headers: {
         'X-Authorization': process.env.API_KEY,
@@ -33,14 +35,14 @@ export const Sessions = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.data === process.env.SESSION_NAME) {
-          setIsButtonVisible(false);
-        } else if (data.data != process.env.SESSION_NAME) {
-          setIsButtonVisible(true);
-        } else if (data.code === 404) {
-          setIsButtonVisible(true);
-        }
+        const datas = data['data']
 
+        if(datas != undefined){
+          setIsButtonVisible(false);
+        } else {
+          setIsButtonVisible(true);
+
+        }
       });
   };
 
