@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Table,
   Thead,
@@ -25,99 +25,110 @@ import {
   FormControl,
   FormLabel,
   HStack,
-} from '@chakra-ui/react';
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
-const initialClients = [
-  {
-    id: 1,
-    name: 'John Doe',
-    whatsappNumber: '62234567890',
-    username: 'john_doe',
-    password: 'password123',
-    plan: 'Premium',
-    product: 'Product A (R$100.00)',
-    invoiceStatus: '1',
-    expiredDate: '2023-12-31',
-    status: true,
-    autoRenewal: true,
-  },
-  {
-    id: 2,
-    name: 'Jane Doe',
-    whatsappNumber: '629876543210',
-    username: 'jane_doe',
-    password: 'securepass',
-    plan: 'Basic',
-    product: 'Product B (R$82.00)',
-    invoiceStatus: '0',
-    expiredDate: '2023-10-15',
-    status: false,
-    autoRenewal: false,
-  },
-];
-
+} from "@chakra-ui/react";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ClientTable = ({ userId }) => {
-  const [clients, setClients] = useState(initialClients);
+  const [clients, setClients] = useState([]);
   const [tanggal, setTanggal] = useState(getFormattedToday());
-  const [searchTerm, setSearchTerm] = useState('');
-  const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: onAddModalClose } = useDisclosure();
-  const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onClose: onEditModalClose } = useDisclosure();
-  const { isOpen: isAutoRenewalModalOpen, onOpen: onAutoRenewalModalOpen, onClose: onAutoRenewalModalClose } = useDisclosure();
-  const [renewalDate, setRenewalDate] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [id, setId] = useState();
+
+  const {
+    isOpen: isAddModalOpen,
+    onOpen: onAddModalOpen,
+    onClose: onAddModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isEditModalOpen,
+    onOpen: onEditModalOpen,
+    onClose: onEditModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isAutoRenewalModalOpen,
+    onOpen: onAutoRenewalModalOpen,
+    onClose: onAutoRenewalModalClose,
+  } = useDisclosure();
+  const [renewalDate, setRenewalDate] = useState("");
   const [selectedClient, setSelectedClient] = useState({
-    name: '',
-    userId: '',
-    whatsappNumber: '',
-    username: '',
-    password: '',
-    plan: '',
-    product: '',
-    invoiceStatus: '0', //0 for pending, 1 for paid
-    expiredDate: '',
-    status: 'active',
-    autoRenewal: '0', //0 for false. 1 for true
-    before3DayNotification: '0', //0 for false. 1 for true
-    onDueDateNotification: '0', //0 for false. 1 for true
-    after3DayNotification: '0', //0 for false. 1 for true
-    comments: '',
+    clientName: "",
+    userId: "",
+    whatsappNumber: "",
+    clientEmail: "",
+    clientPassword: "",
+    plan: "",
+    product: "",
+    invoiceStatus: "0", //0 for pending, 1 for paid
+    startDate: "",
+    status: "active",
+    autoRenewal: "0", //0 for false. 1 for true
+    before3DayNotification: false,
+    before2DayNotification: false,
+    before1DayNotification: false,
+    onDueDateNotification: false, //0 for false. 1 for true
+    after1DayNotification: false, //0 for false. 1 for true
+    after2DayNotification: false, //0 for false. 1 for true
+    after3DayNotification: false, //0 for false. 1 for true
+    comments: "",
   });
-  const [editedlient, setEditedClient] = useState({
-    name: '',
-    userId: '',
-    whatsappNumber: '',
-    username: '',
-    password: '',
-    plan: '',
-    product: '',
-    invoiceStatus: '0', //0 for pending, 1 for paid
-    expiredDate: '',
-    status: 'active',
-    autoRenewal: '0', //0 for false. 1 for true
-    before3DayNotification: '0', //0 for false. 1 for true
-    onDueDateNotification: '0', //0 for false. 1 for true
-    after3DayNotification: '0', //0 for false. 1 for true
-    comments: '',
+  const [editedClient, setEditedClient] = useState({
+    clientName: "",
+    userId: "",
+    whatsappNumber: "",
+    clientEmail: "",
+    clientPassword: "",
+    plan: "",
+    product: "",
+    invoiceStatus: "0", //0 for pending, 1 for paid
+    startDate: "",
+    status: "active",
+    autoRenewal: "0", //0 for false. 1 for true
+    before3DayNotification: false,
+    before2DayNotification: false,
+    before1DayNotification: false,
+    onDueDateNotification: false, //0 for false. 1 for true
+    after1DayNotification: false, //0 for false. 1 for true
+    after2DayNotification: false, //0 for false. 1 for true
+    after3DayNotification: false, //0 for false. 1 for true
+    comments: "",
   });
 
   function getFormattedToday() {
     const today = new Date();
     const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const day = today.getDate().toString().padStart(2, '0');
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
 
+  const uid = localStorage.getItem("id");
+  // /api/plan/getAllPlan?userid=${uid}
+
+  const handleClientsApi = async () => {
+    try {
+      await fetch(`/api/clients/getAllClient?userid=${uid}`, {
+        method: "GET",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setClients(data.data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    handleClientsApi();
+  }, []);
 
   const currentDate = new Date();
 
-  const filteredClients = clients.filter((client) =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredClients = clients.filter((client) =>
+  //   client.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   const handleEditClick = (client) => {
     setEditedClient(client);
@@ -125,32 +136,62 @@ const ClientTable = ({ userId }) => {
   };
 
   const handleAutoRenewal = (client) => {
+    setId(client.id);
     setSelectedClient(client);
     onAutoRenewalModalOpen();
   };
 
-
   const handleDeleteClick = (clientId) => {
-    setClients((prevClients) =>
-      prevClients.filter((client) => client.id !== clientId)
-    );
+    fetch("/api/clients/deleteClient", {
+      method: "DELETE",
+      headers: {
+        "X-Authorization": process.env.API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: clientId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code === 200) {
+          successNotify("Plan successfully deleted");
+        } else if (data.code === 400) {
+          failedNotify(data.message);
+        } else if (data.code === 500) {
+          failedNotify(data.sqlMessage);
+        }
+      });
   };
 
   const handleAutoRenewalSave = () => {
-    // setClients((prevClients) =>
-    //   prevClients.map((client) =>
-    //     client.id === selectedClient.id
-    //       ? { ...client, autoRenewal: true, expiredDate: renewalDate }
-    //       : client
-    //   )
-    // );
     if (!renewalDate) {
-      failedNotify("Renewal date must be filled in")
-    } else if (renewalDate){
-      successNotify("Successfully added expiration duration")
+      failedNotify("Renewal date must be filled in");
+    } else if (renewalDate) {
+      fetch("/api/clients/editStartDate", {
+        method: "PUT",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          expiredDate: renewalDate,
+          id: id,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code === 200) {
+            successNotify("Successfully added expiration duration");
+          } else if (data.code === 400) {
+            failedNotify(data.message);
+          } else if (data.code === 500) {
+            failedNotify(data.sqlMessage);
+          }
+        });
+
       onAutoRenewalModalClose();
     }
-    
   };
 
   const handleInputChange = (e) => {
@@ -159,8 +200,25 @@ const ClientTable = ({ userId }) => {
   };
 
   const handleSaveEdit = () => {
-    console.log(editedlient)
-    // onSave(editedClientInfo);
+    fetch("/api/clients/editClient", {
+      method: "PUT",
+      headers: {
+        "X-Authorization": process.env.API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedClient),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code === 200) {
+          successNotify("Plan successfully edited");
+        } else if (data.code === 400) {
+          failedNotify(data.message);
+        } else if (data.code === 500) {
+          failedNotify(data.sqlMessage);
+        }
+      });
+
     // onClose();
   };
 
@@ -169,11 +227,10 @@ const ClientTable = ({ userId }) => {
     onAddModalOpen();
   };
 
-
   const getStatusColor = (status) => {
-    if (status === '1') return 'green';
-    if (status === '0') return 'yellow';
-    return 'black'; // default color
+    if (status === "1") return "green";
+    if (status === "0") return "yellow";
+    return "black"; // default color
   };
 
   const isExpired = (date) => {
@@ -183,11 +240,11 @@ const ClientTable = ({ userId }) => {
 
   const successNotify = (message) => {
     toast.success(message, {
-      position: toast.POSITION.TOP_RIGHT
+      position: toast.POSITION.TOP_RIGHT,
     });
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 2500);
+    setTimeout(() => {
+      window.location.reload();
+    }, 2500);
     // resetState();
   };
 
@@ -209,7 +266,8 @@ const ClientTable = ({ userId }) => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark" />
+        theme="dark"
+      />
       <Stack spacing={4}>
         {/* Search Input */}
         <Input
@@ -237,30 +295,30 @@ const ClientTable = ({ userId }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {filteredClients.map((client) => (
+            {clients.map((client) => (
               <Tr key={client.id}>
-                <Td>{client.name}</Td>
+                <Td>{client.clientName}</Td>
                 <Td>{client.whatsappNumber}</Td>
-                <Td>{client.username}</Td>
-                <Td>{client.password}</Td>
+                <Td>{client.clientEmail}</Td>
+                <Td>{client.clientPassword}</Td>
                 <Td>{client.plan}</Td>
                 <Td>{client.product}</Td>
                 <Td>
                   <Badge colorScheme={getStatusColor(client.invoiceStatus)}>
-                    {client.invoiceStatus === '1' ? 'Paid' : 'Pending'}
+                    {client.invoiceStatus === "1" ? "Paid" : "Pending"}
                   </Badge>
                 </Td>
-                <Td color={isExpired(client.expiredDate) ? 'red' : 'green'}>
-                  {client.expiredDate}
+                <Td color={isExpired(client.startDate) ? "red" : "green"}>
+                  {client.startDate}
                 </Td>
                 <Td>
-                  <Badge colorScheme={client.status ? 'green' : 'red'}>
-                    {client.status ? 'Active' : 'Inactive'}
+                  <Badge colorScheme={client.status ? "green" : "red"}>
+                    {client.status ? "Active" : "Inactive"}
                   </Badge>
                 </Td>
                 <Td>
-                  <Badge colorScheme={client.autoRenewal ? 'green' : 'red'}>
-                    {client.autoRenewal ? 'Active' : 'Inactive'}
+                  <Badge colorScheme={client.autoRenewal ? "green" : "red"}>
+                    {client.autoRenewal == "1" ? "Active" : "Inactive"}
                   </Badge>
                 </Td>
                 <Td>
@@ -269,13 +327,13 @@ const ClientTable = ({ userId }) => {
                     colorScheme="blue"
                     onClick={() => handleEditClick(client)}
                     mr={2}
-                    aria-label={''}
+                    aria-label={""}
                   />
                   <IconButton
                     icon={<FaTrash />}
                     colorScheme="red"
                     onClick={() => handleDeleteClick(client.id)}
-                    aria-label={''}
+                    aria-label={""}
                   />
                   <Button
                     colorScheme="teal"
@@ -300,64 +358,136 @@ const ClientTable = ({ userId }) => {
             <ModalCloseButton />
             <ModalBody>
               <VStack spacing={4} align="start">
-
-                <HStack spacing='22px'>
-                  <FormControl width={'2xl'}>
-                    <Text fontSize="lg" fontWeight="bold">Client Name</Text>
-                    <Input name="name" value={editedlient.name} onChange={handleInputChange} placeholder="Client Name" />
+                <HStack spacing="22px">
+                  <FormControl width={"2xl"}>
+                    <Text fontSize="lg" fontWeight="bold">
+                      Client Name
+                    </Text>
+                    <Input
+                      name="clientName"
+                      value={editedClient.clientName}
+                      onChange={handleInputChange}
+                      placeholder="Client Name"
+                    />
                   </FormControl>
 
                   <FormControl>
-                    <Text fontSize="lg" fontWeight="bold">WhatsApp</Text>
-                    <Input name="whatsappNumber" value={editedlient.whatsappNumber} onChange={handleInputChange} placeholder="Whatsapp Number" />
+                    <Text fontSize="lg" fontWeight="bold">
+                      WhatsApp
+                    </Text>
+                    <Input
+                      name="whatsappNumber"
+                      value={editedClient.whatsappNumber}
+                      onChange={handleInputChange}
+                      placeholder="Whatsapp Number"
+                    />
                   </FormControl>
                 </HStack>
 
+                <Text fontSize="lg" fontWeight="bold">
+                  Username
+                </Text>
+                <Input
+                  name="clientEmail"
+                  value={editedClient.clientEmail}
+                  onChange={handleInputChange}
+                  placeholder="Username"
+                />
 
-                <Text fontSize="lg" fontWeight="bold">Username</Text>
-                <Input name="username" value={editedlient.username} onChange={handleInputChange} placeholder="Username" />
+                <Text fontSize="lg" fontWeight="bold">
+                  Password
+                </Text>
+                <Input
+                  name="clientPassword"
+                  value={editedClient.clientPassword}
+                  onChange={handleInputChange}
+                  placeholder="Password"
+                />
 
-                <Text fontSize="lg" fontWeight="bold">Password</Text>
-                <Input name="password" value={editedlient.password} onChange={handleInputChange} placeholder="Password" />
-
-                <HStack spacing='22px'>
-                  <FormControl width={'2xl'}>
-                    <Text fontSize="lg" fontWeight="bold">Plan</Text>
-                    <Input disabled name="plan" value={editedlient.plan} onChange={handleInputChange} placeholder="Plan" />
+                <HStack spacing="22px">
+                  <FormControl width={"2xl"}>
+                    <Text fontSize="lg" fontWeight="bold">
+                      Plan
+                    </Text>
+                    <Input
+                      disabled
+                      name="plan"
+                      value={editedClient.plan}
+                      onChange={handleInputChange}
+                      placeholder="Plan"
+                    />
                   </FormControl>
 
                   <FormControl>
-                    <Text fontSize="lg" fontWeight="bold">Product</Text>
-                    <Input disabled name="product" value={editedlient.product} onChange={handleInputChange} placeholder="Product" />
+                    <Text fontSize="lg" fontWeight="bold">
+                      Product
+                    </Text>
+                    <Input
+                      disabled
+                      name="product"
+                      value={editedClient.product}
+                      onChange={handleInputChange}
+                      placeholder="Product"
+                    />
                   </FormControl>
                 </HStack>
 
-                <Text fontSize="lg" fontWeight="bold">Payment Status</Text>
-                {editedlient.invoiceStatus === '1' ?
-                  <Select disabled name="invoiceStatus" value={editedlient.invoiceStatus} onChange={handleInputChange}>
+                <Text fontSize="lg" fontWeight="bold">
+                  Payment Status
+                </Text>
+                {editedClient.invoiceStatus === "1" ? (
+                  <Select
+                    disabled
+                    name="invoiceStatus"
+                    value={editedClient.invoiceStatus}
+                    onChange={handleInputChange}
+                  >
                     <option value="1">Paid</option>
                     <option value="0">Pending</option>
                   </Select>
-
-                  :
-                  <Select name="invoiceStatus" value={editedlient.invoiceStatus} onChange={handleInputChange}>
+                ) : (
+                  <Select
+                    name="invoiceStatus"
+                    value={editedClient.invoiceStatus}
+                    onChange={handleInputChange}
+                  >
                     <option value="1">Paid</option>
                     <option value="0">Pending</option>
                   </Select>
-                }
+                )}
 
+                <Text fontSize="lg" fontWeight="bold">
+                  Expired Date
+                </Text>
+                <Input
+                  disabled
+                  name="startDate"
+                  value={editedClient.startDate}
+                  onChange={handleInputChange}
+                  placeholder="Expired Date"
+                />
 
-                <Text fontSize="lg" fontWeight="bold">Expired Date</Text>
-                <Input disabled name="expiredDate" value={editedlient.expiredDate} onChange={handleInputChange} placeholder="Expired Date" />
-
-                <Text fontSize="lg" fontWeight="bold">Status</Text>
-                <Select disabled name="status" value={editedlient.status} onChange={handleInputChange}>
+                <Text fontSize="lg" fontWeight="bold">
+                  Status
+                </Text>
+                <Select
+                  disabled
+                  name="status"
+                  value={editedClient.status}
+                  onChange={handleInputChange}
+                >
                   <option value="1">Active</option>
                   <option value="0">Inactive</option>
                 </Select>
 
-                <Text fontSize="lg" fontWeight="bold">Auto Renewal Status</Text>
-                <Select name="autoRenewal" value={editedlient.autoRenewal} onChange={handleInputChange}>
+                <Text fontSize="lg" fontWeight="bold">
+                  Auto Renewal Status
+                </Text>
+                <Select
+                  name="autoRenewal"
+                  value={editedClient.autoRenewal}
+                  onChange={handleInputChange}
+                >
                   <option value="1">Active</option>
                   <option value="0">Inactive</option>
                 </Select>
@@ -374,14 +504,17 @@ const ClientTable = ({ userId }) => {
         </Modal>
 
         {/* Modal for Auto Renewal */}
-        <Modal isOpen={isAutoRenewalModalOpen} onClose={onAutoRenewalModalClose}>
+        <Modal
+          isOpen={isAutoRenewalModalOpen}
+          onClose={onAutoRenewalModalClose}
+        >
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Auto Renewal</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <FormControl isRequired>
-                <Text mb={2}>Expired Date: {selectedClient.expiredDate}</Text>
+                <Text mb={2}>Expired Date: {selectedClient.startDate}</Text>
                 <Input
                   type="date"
                   value={renewalDate}

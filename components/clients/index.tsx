@@ -1,3 +1,7 @@
+// buat userId dari component client mengambil dari usecontext userId
+
+"use client";
+
 import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -13,11 +17,32 @@ import { TableWrapper } from "../table/table";
 import ClientTable from "./table/table-client";
 import { VStack } from "@chakra-ui/react";
 import AddClient from "./add-client";
+import ExportExcel from "./excel-export";
 
 export const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const uid = localStorage.getItem('id');
-  console.log('dsaidusadao', uid)
+
+  const [clients, setClients] = useState([]);
+  const uid = localStorage.getItem("id");
+
+  const handleClientsApi = async () => {
+    try {
+      await fetch(`/api/clients/getExportClient?userid=${uid}`, {
+        method: "GET",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setClients(data.data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    handleClientsApi();
+  }, []);
+
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -56,11 +81,20 @@ export const Clients = () => {
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex flex-row gap-3.5 flex-wrap">
           <VStack spacing={4} align="start">
-            <Button  onClick={handleOpenModal}>
-              Add Client
-            </Button>
+            <Button onClick={handleOpenModal}>Add Client</Button>
+            <ExportExcel
+              fileName={`${new Date().getFullYear()}-${
+                new Date().getMonth() + 1
+              }-${new Date().getDate()}`}
+              excelData={clients}
+            />
 
-            <AddClient userId="170323" isOpen={isModalOpen} onClose={handleCloseModal} onAdd={handleAddClient} />
+            <AddClient
+              userId={uid}
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              onAdd={handleAddClient}
+            />
           </VStack>
           {/* <Button color="primary" startContent={<ExportIcon />} >
             Export to CSV
@@ -68,7 +102,7 @@ export const Clients = () => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        <ClientTable userId="170323"/>
+        <ClientTable userId={uid} />
       </div>
     </div>
   );
