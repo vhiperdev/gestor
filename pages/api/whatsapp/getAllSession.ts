@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import checkAuthorizationHeader from '../../../services/authorization'
 import * as whatsapp from "wa-multi-session";
 import { startSession } from '../../../services/startSession';
-import { schedulerToday } from '../../../services/schedulerToday';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
@@ -10,9 +9,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         startSession();
 
         checkAuthorizationHeader(async (req: NextApiRequest, res: NextApiResponse) => {
-            const session = req.query.session as string
-            //Get Session by UserName
-            const sessions = whatsapp.getSession(session);
+            //Get All Session
+            const sessions = whatsapp.getAllSession();
             
             res.status(200).json({ 
                 code: 200,

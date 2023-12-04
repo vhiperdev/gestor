@@ -15,10 +15,10 @@ function replaceVariables(message, replacements) {
   return message;
 }
 
-export const schedulerToday = () => {
-  const queryToday = `SELECT u.username, c.clientPassword, c.clientName, c.clientEmail, c.whatsappNumber, DATE_FORMAT(c.startDate, '%Y-%m-%d') as expired_date, tm.message, p.productName, p.price as product_price, pl.planName, pl.price as plan_price, CASE WHEN c.invoiceStatus = 0 THEN 'Pending' WHEN c.invoiceStatus = 1 THEN 'Paid' ELSE 'Unknown' END AS invoiceStatus FROM clients c JOIN templateMessages tm ON c.userId = tm.userId JOIN plans pl ON c.plan = pl.id JOIN products p ON c.product = p.id JOIN users u ON c.userId = u.id WHERE c.reminderToday = 1 AND tm.codeMessage = 100 AND DATE(c.startDate) = CURDATE();`
+export const schedulerAfterFive = () => {
+  const queryAfterFive = `SELECT u.username, c.clientPassword, c.clientName, c.clientEmail, c.whatsappNumber, DATE_FORMAT(c.startDate, '%Y-%m-%d') as expired_date, tm.message, p.productName, p.price as product_price, pl.planName, pl.price as plan_price, CASE WHEN c.invoiceStatus = 0 THEN 'Pending' WHEN c.invoiceStatus = 1 THEN 'Paid' ELSE 'Unknown' END AS invoiceStatus FROM clients c JOIN templateMessages tm ON c.userId = tm.userId JOIN plans pl ON c.plan = pl.id JOIN products p ON c.product = p.id JOIN users u ON c.userId = u.id WHERE c.reminderAfterTwo = 1 AND tm.codeMessage = 50 AND c.startDate >= DATE_SUB(CURDATE(), INTERVAL 5 DAY) AND c.startDate < DATE_SUB(CURDATE(), INTERVAL 4 DAY);`
 
-  executeQuery(queryToday)
+  executeQuery(queryAfterFive)
     .then((results) => {
       const lengthResult = results.length
 
