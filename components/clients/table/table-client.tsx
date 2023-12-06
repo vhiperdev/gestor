@@ -305,7 +305,7 @@ const ClientTable = ({ userId }) => {
                 <Td>{client.product}</Td>
                 <Td>
                   <Badge colorScheme={getStatusColor(client.invoiceStatus)}>
-                    {client.invoiceStatus === "1" ? "Paid" : "Pending"}
+                    {client.invoiceStatus == "1" ? "Paid" : "Pending"}
                   </Badge>
                 </Td>
                 <Td color={isExpired(client.startDate) ? "red" : "green"}>

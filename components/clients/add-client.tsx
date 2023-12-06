@@ -352,7 +352,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
               </FormControl>
 
               <HStack spacing="22px">
-                <FormControl mb={4} isRequired>
+                <FormControl mb={4}>
                   <FormLabel>Auto Renewal</FormLabel>
                   <Switch
                     color="success"
@@ -364,7 +364,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
               </HStack>
 
               <HStack spacing="22px">
-                <FormControl mb={4} isRequired>
+                <FormControl mb={4}>
                   <FormLabel>Before 3 Day Notification</FormLabel>
                   <Switch
                     color="success"
@@ -376,7 +376,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   />
                 </FormControl>
 
-                <FormControl mb={4} isRequired>
+                <FormControl mb={4}>
                   <FormLabel>Before 2 Day Notification</FormLabel>
                   <Switch
                     color="success"
@@ -388,7 +388,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   />
                 </FormControl>
 
-                <FormControl mb={4} isRequired>
+                <FormControl mb={4}>
                   <FormLabel>Before 1 Day Notification</FormLabel>
                   <Switch
                     color="success"
@@ -401,7 +401,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                 </FormControl>
               </HStack>
               <HStack spacing="22px">
-                <FormControl mb={4} isRequired>
+                <FormControl mb={4}>
                   <FormLabel>After 3 Day Notification</FormLabel>
                   <Switch
                     color="success"
@@ -411,7 +411,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   />
                 </FormControl>
 
-                <FormControl mb={4} isRequired>
+                <FormControl mb={4}>
                   <FormLabel>After 2 Day Notification</FormLabel>
                   <Switch
                     color="success"
@@ -421,7 +421,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   />
                 </FormControl>
 
-                <FormControl mb={4} isRequired>
+                <FormControl mb={4}>
                   <FormLabel>After 1 Day Notification</FormLabel>
                   <Switch
                     color="success"
@@ -433,7 +433,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
               </HStack>
 
               <HStack spacing="22px">
-                <FormControl mb={4} isRequired>
+                <FormControl mb={4}>
                   <FormLabel>at the Day Notification</FormLabel>
                   <Switch
                     color="success"
@@ -444,7 +444,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                 </FormControl>
               </HStack>
 
-              <FormControl mb={4} isRequired>
+              <FormControl mb={4}>
                 <FormLabel>Comment</FormLabel>
                 <Textarea
                   name="comments"

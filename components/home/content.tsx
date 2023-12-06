@@ -7,6 +7,7 @@ import { TotalClient } from "./total-client";
 import { LatestTransaction } from "./latest-transaction";
 import { Link } from "@nextui-org/react";
 import NextLink from "next/link";
+import ClientTable from "../clients/table/table-client";
 
 const Chart = dynamic(
   () => import("../charts/steam").then((mod) => mod.Steam),
@@ -14,6 +15,8 @@ const Chart = dynamic(
     ssr: false,
   }
 );
+
+const userId = localStorage.getItem('id');
 
 export const Content = () => (
   <div className=" h-full">
@@ -60,7 +63,7 @@ export const Content = () => (
           View All
         </Link>
       </div>
-      <TableWrapper />
+      <ClientTable userId={userId} />
     </div>
   </div>
 );
