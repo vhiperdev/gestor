@@ -29,6 +29,7 @@ import {
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import moment from "moment";
 
 const ClientTable = ({ userId }) => {
   const [clients, setClients] = useState([]);
@@ -72,6 +73,9 @@ const ClientTable = ({ userId }) => {
     after2DayNotification: false, //0 for false. 1 for true
     after3DayNotification: false, //0 for false. 1 for true
     comments: "",
+    application: "",
+    mac: "",
+    keyApplication: ""
   });
   const [editedClient, setEditedClient] = useState({
     clientName: "",
@@ -93,6 +97,13 @@ const ClientTable = ({ userId }) => {
     after2DayNotification: false, //0 for false. 1 for true
     after3DayNotification: false, //0 for false. 1 for true
     comments: "",
+    application: "",
+    mac: "",
+    keyApplication: "",
+    plan_name: "",
+    product_name: "",
+    plan_price: "",
+    product_price: ""
   });
 
   function getFormattedToday() {
@@ -254,6 +265,13 @@ const ClientTable = ({ userId }) => {
     });
   };
 
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
+
   return (
     <>
       <ToastContainer
@@ -287,6 +305,7 @@ const ClientTable = ({ userId }) => {
               <Th>Password</Th>
               <Th>Plan</Th>
               <Th>Product</Th>
+              <Th>Application</Th>
               <Th>Payment Status</Th>
               <Th>Expired Date</Th>
               <Th>Status</Th>
@@ -301,15 +320,16 @@ const ClientTable = ({ userId }) => {
                 <Td>{client.whatsappNumber}</Td>
                 <Td>{client.clientEmail}</Td>
                 <Td>{client.clientPassword}</Td>
-                <Td>{client.plan}</Td>
-                <Td>{client.product}</Td>
+                <Td>{client.plan_name} ({formatCurrency(client.plan_price)})</Td>
+                <Td>{client.product_name}</Td>
+                <Td>{client.application}</Td>
                 <Td>
                   <Badge colorScheme={getStatusColor(client.invoiceStatus)}>
                     {client.invoiceStatus == "1" ? "Paid" : "Pending"}
                   </Badge>
                 </Td>
                 <Td color={isExpired(client.startDate) ? "red" : "green"}>
-                  {client.startDate}
+                  {moment(client.startDate).format('MMM Do YY, h:mm:ss a')}
                 </Td>
                 <Td>
                   <Badge colorScheme={client.status ? "green" : "red"}>
@@ -412,7 +432,7 @@ const ClientTable = ({ userId }) => {
                     <Input
                       disabled
                       name="plan"
-                      value={editedClient.plan}
+                      value={`${editedClient.plan_name} ${formatCurrency(editedClient.plan_price)}`}
                       onChange={handleInputChange}
                       placeholder="Plan"
                     />
@@ -425,7 +445,7 @@ const ClientTable = ({ userId }) => {
                     <Input
                       disabled
                       name="product"
-                      value={editedClient.product}
+                      value={`${editedClient.product_name} ${formatCurrency(editedClient.product_price)}`}
                       onChange={handleInputChange}
                       placeholder="Product"
                     />
@@ -462,7 +482,7 @@ const ClientTable = ({ userId }) => {
                 <Input
                   disabled
                   name="startDate"
-                  value={editedClient.startDate}
+                  value={moment(editedClient.startDate).format('MMM Do YY, h:mm:ss a')}
                   onChange={handleInputChange}
                   placeholder="Expired Date"
                 />
@@ -492,6 +512,44 @@ const ClientTable = ({ userId }) => {
                   <option value="0">Inactive</option>
                 </Select>
               </VStack>
+
+              <HStack spacing="22px">
+                <FormControl width={"2xl"} >
+                  <FormLabel fontSize="lg" fontWeight="bold">
+                    Application
+                  </FormLabel>
+                  <Input
+                    name="application"
+                    value={editedClient.application}
+                    onChange={handleInputChange}
+                    placeholder="Application"
+                  />
+                </FormControl>
+
+                <FormControl >
+                  <FormLabel fontSize="lg" fontWeight="bold">
+                    Mac
+                  </FormLabel>
+                  <Input
+                    name="mac"
+                    value={editedClient.mac}
+                    onChange={handleInputChange}
+                    placeholder="Mac"
+                  />
+                </FormControl>
+              </HStack>
+
+              <FormControl >
+                <FormLabel fontSize="lg" fontWeight="bold">
+                  Key
+                </FormLabel>
+                <Input
+                  name="keyApplication"
+                  value={editedClient.keyApplication}
+                  onChange={handleInputChange}
+                  placeholder="Key"
+                />
+              </FormControl>
             </ModalBody>
 
             <ModalFooter>
@@ -514,9 +572,9 @@ const ClientTable = ({ userId }) => {
             <ModalCloseButton />
             <ModalBody>
               <FormControl isRequired>
-                <Text mb={2}>Expired Date: {selectedClient.startDate}</Text>
+                <Text mb={2}>Expired Date: {moment(selectedClient.startDate).format('MMM Do YY, h:mm:ss a')}</Text>
                 <Input
-                  type="date"
+                  type="datetime-local"
                   value={renewalDate}
                   onChange={(e) => setRenewalDate(e.target.value)}
                   min={getFormattedToday()}

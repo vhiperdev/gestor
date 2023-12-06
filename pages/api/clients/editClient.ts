@@ -28,9 +28,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           status,
           userId,
           whatsappNumber,
+          application,
+          mac,
+          keyApplication,
         } = req.body;
 
-        const query = `UPDATE clients SET clientName = '${clientName}', whatsappNumber = '${whatsappNumber}', clientEmail = '${clientEmail}', clientPassword = '${clientPassword}', product = '${product}', plan = '${plan}', invoiceStatus = '${invoiceStatus}', reminderBeforeOne = '${reminderBeforeOne}', reminderBeforeTwo = '${reminderBeforeTwo}', reminderBeforeThree = '${reminderBeforeThree}', reminderToday = '${reminderToday}', reminderAfterOne = '${reminderAfterOne}', reminderAfterTwo = '${reminderAfterTwo}', reminderAfterThree = '${reminderAfterThree}', comment = '${comment}', autoRenewal = '${autoRenewal}', status = '${status}' WHERE id = '${id}'`;
+        const query = `UPDATE clients SET clientName = '${clientName}', whatsappNumber = '${whatsappNumber}', clientEmail = '${clientEmail}', clientPassword = '${clientPassword}', product = '${product}', plan = '${plan}', invoiceStatus = '${invoiceStatus}', reminderBeforeOne = '${reminderBeforeOne}', reminderBeforeTwo = '${reminderBeforeTwo}', reminderBeforeThree = '${reminderBeforeThree}', reminderToday = '${reminderToday}', reminderAfterOne = '${reminderAfterOne}', reminderAfterTwo = '${reminderAfterTwo}', reminderAfterThree = '${reminderAfterThree}', comment = '${comment}', autoRenewal = '${autoRenewal}', status = '${status}', application = '${application}', mac = '${mac}', keyApplication = '${keyApplication}' WHERE id = '${id}'`;
 
         return new Promise<any[]>((resolve, reject) => {
           executeQuery(query)

@@ -30,6 +30,7 @@ import {
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import moment from 'moment';
 
 
 const AccountTable = ({ users, onToggleUser }) => {
@@ -50,7 +51,7 @@ const AccountTable = ({ users, onToggleUser }) => {
             {/* <Td>Tampilkan foto profil di sini</Td> */}
             <Td>{user.username}</Td>
             <Td>{user.email}</Td>
-            <Td>{user.createdOn}</Td>
+            <Td>{moment(user.createdOn).format('MMM Do YY')}</Td>
             <Td>
               <Button
                 onClick={() => onToggleUser(user.id, !user.isActive)}

@@ -76,6 +76,9 @@ export const TemplateWhatsapp = () => {
     '{product} = product',
     '{plan} = plan',
     '{expired_date} = expired date',
+    '{application} = application name',
+    '{mac} = mac application',
+    '{key} = key application',
   ];
 
   const handleOpenModal = (item) => {

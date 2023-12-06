@@ -15,7 +15,7 @@ import { SettingsIcon } from "../icons/sidebar/settings-icon";
 import { TableWrapper } from "../table/table";
 // import { AddClient } from "./add-client";
 import ClientTable from "./table/table-client";
-import { VStack } from "@chakra-ui/react";
+import { HStack, VStack } from "@chakra-ui/react";
 import AddClient from "./add-client";
 import ExportExcel from "./excel-export";
 
@@ -24,6 +24,7 @@ export const Clients = () => {
 
   const [clients, setClients] = useState([]);
   const uid = localStorage.getItem("id");
+  const username = localStorage.getItem("name");
 
   const handleClientsApi = async () => {
     try {
@@ -80,10 +81,10 @@ export const Clients = () => {
       <h3 className="text-xl font-semibold">All Clients</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <VStack spacing={4} align="start">
+          <HStack spacing={4} align="start">
             <Button onClick={handleOpenModal}>Add Client</Button>
             <ExportExcel
-              fileName={`${new Date().getFullYear()}-${
+              fileName={`Report - ${username} - ${new Date().getFullYear()}-${
                 new Date().getMonth() + 1
               }-${new Date().getDate()}`}
               excelData={clients}
@@ -95,7 +96,7 @@ export const Clients = () => {
               onClose={handleCloseModal}
               onAdd={handleAddClient}
             />
-          </VStack>
+          </HStack>
           {/* <Button color="primary" startContent={<ExportIcon />} >
             Export to CSV
           </Button> */}

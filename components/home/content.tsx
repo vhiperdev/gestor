@@ -16,8 +16,6 @@ const Chart = dynamic(
   }
 );
 
-const userId = localStorage.getItem('id');
-
 export const Content = () => (
   <div className=" h-full">
     <div className="flex justify-center gap-4 xl:gap-12 pt-3 px-4 lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full">
@@ -51,7 +49,7 @@ export const Content = () => (
     </div>
 
     {/* Table Latest Clients */}
-    <div className="flex flex-col justify-center w-full py-5 px-4 lg:px-0  max-w-[90rem] mx-auto gap-3">
+    {/* <div className="flex flex-col justify-center w-full py-5 px-4 lg:px-0  max-w-[90rem] mx-auto gap-3">
       <div className="flex  flex-wrap justify-between">
         <h3 className="text-center text-xl font-semibold">Latest Clients</h3>
         <Link
@@ -64,6 +62,6 @@ export const Content = () => (
         </Link>
       </div>
       <ClientTable userId={userId} />
-    </div>
+    </div> */}
   </div>
 );

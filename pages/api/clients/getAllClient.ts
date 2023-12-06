@@ -8,8 +8,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     checkAuthorizationHeader(
       async (req: NextApiRequest, res: NextApiResponse) => {
         const uid = req.query.userid;
-        const query = `select * from clients WHERE userId = '${uid}'`;
+        const query = `SELECT clients.*, products.productName AS product_name, plans.planName AS plan_name, plans.price AS plan_price, products.price AS product_price FROM clients JOIN products ON clients.product = products.id JOIN plans ON clients.plan = plans.id WHERE clients.userId = '${uid}'`;
 
+        console.log(query)
         return new Promise<any[]>((resolve, reject) => {
           executeQuery(query)
             .then((results) => {

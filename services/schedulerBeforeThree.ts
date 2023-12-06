@@ -8,7 +8,7 @@ function replaceVariables(message, replacements) {
   for (const key in replacements) {
     if (Object.prototype.hasOwnProperty.call(replacements, key)) {
       const placeholder = `{${key}}`;
-      console.log("ini kunci",key)
+      console.log("ini kunci", key)
       message = message.replace(new RegExp(placeholder, 'g'), replacements[key]);
     }
   }
@@ -34,8 +34,10 @@ export const schedulerBeforeThree = () => {
           let plan = `${item['planName']} (R$${item['plan_price']})`
           let expired_date = item['expired_date']
           let message = item['message']
+          let application = item['application']
+          let mac = item['mac']
+          let keyApplication = item['keyApplication']
 
-      
           let replacements = {
             name: name,
             username: username,
@@ -45,6 +47,9 @@ export const schedulerBeforeThree = () => {
             product: product,
             plan: plan,
             expired_date: expired_date,
+            application: application,
+            mac: mac,
+            key: keyApplication
           };
 
           let modifiedMessage = replaceVariables(message, replacements);

@@ -42,6 +42,9 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
     after2DayNotification: false, //0 for false. 1 for true
     after3DayNotification: false, //0 for false. 1 for true
     comments: "",
+    application: "",
+    mac: "",
+    keyApplication: ""
   });
   const [products, setProducts] = useState([]);
   const [plans, setPlans] = useState([]);
@@ -173,6 +176,9 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
       after2DayNotification: false, //0 for false. 1 for true
       after3DayNotification: false, //0 for false. 1 for true
       comments: "",
+      application: "",
+      mac: "",
+      keyApplication: ""
     });
   };
 
@@ -282,7 +288,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                     placeholder="Select an Plan"
                   >
                     {plans.map((option) => (
-                      <option key={option.id} value={option.price}>
+                      <option key={option.id} value={option.id}>
                         {option.planName}
                       </option>
                     ))}
@@ -300,7 +306,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                     placeholder="Select an Product"
                   >
                     {products.map((option) => (
-                      <option key={option.id} value={option.price}>
+                      <option key={option.id} value={option.id}>
                         {option.productName} ({formatCurrency(option.price)})
                       </option>
                     ))}
@@ -331,7 +337,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   name="expiredDate"
                   value={newClientInfo.expiredDate}
                   onChange={handleInputChange}
-                  type="date"
+                  type="datetime-local"
                   min={getFormattedToday()}
                 />
               </FormControl>
@@ -349,6 +355,44 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </Select>
+              </FormControl>
+
+              <HStack spacing="22px">
+                <FormControl width={"2xl"} >
+                  <FormLabel fontSize="lg" fontWeight="bold">
+                    Application
+                  </FormLabel>
+                  <Input
+                    name="application"
+                    value={newClientInfo.application}
+                    onChange={handleInputChange}
+                    placeholder="Application"
+                  />
+                </FormControl>
+
+                <FormControl >
+                  <FormLabel fontSize="lg" fontWeight="bold">
+                    Mac
+                  </FormLabel>
+                  <Input
+                    name="mac"
+                    value={newClientInfo.mac}
+                    onChange={handleInputChange}
+                    placeholder="Mac"
+                  />
+                </FormControl>
+              </HStack>
+
+              <FormControl >
+                <FormLabel fontSize="lg" fontWeight="bold">
+                  Key
+                </FormLabel>
+                <Input
+                  name="keyApplication"
+                  value={newClientInfo.keyApplication}
+                  onChange={handleInputChange}
+                  placeholder="Key"
+                />
               </FormControl>
 
               <HStack spacing="22px">

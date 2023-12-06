@@ -34,6 +34,9 @@ export const schedulerAfterThree = () => {
           let plan = `${item['planName']} (R$${item['plan_price']})`
           let expired_date = item['expired_date']
           let message = item['message']
+          let application = item['application']
+          let mac = item['mac']
+          let keyApplication = item['keyApplication']
 
       
           let replacements = {
@@ -45,6 +48,9 @@ export const schedulerAfterThree = () => {
             product: product,
             plan: plan,
             expired_date: expired_date,
+            application: application,
+            mac: mac,
+            key: keyApplication
           };
 
           let modifiedMessage = replaceVariables(message, replacements);

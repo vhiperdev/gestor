@@ -6,7 +6,7 @@ import XSLX from "sheetjs-style";
 const ExportExcel: any = ({ excelData, fileName }) => {
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-  const fileExtension = ".xslx";
+  const fileExtension = ".xlsx";
 
   const exportToExcel = async () => {
     const ws = XSLX.utils.json_to_sheet(excelData);
@@ -23,7 +23,7 @@ const ExportExcel: any = ({ excelData, fileName }) => {
 
   return (
     <>
-      <Button onClick={() => exportToExcel()}>ExportExcel</Button>
+      <Button onClick={() => exportToExcel()}>Export to Excel</Button>
     </>
   );
 };

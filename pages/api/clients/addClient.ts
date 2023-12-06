@@ -27,6 +27,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           after2DayNotification, //0 for false. 1 for true
           after3DayNotification, //0 for false. 1 for true
           comments,
+          application,
+          mac,
+          keyApplication,
         } = req.body;
 
         const newAutoRenewal = autoRenewal ? 1 : 0;
@@ -38,7 +41,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         const newAfter2DayNotification = after2DayNotification ? 1 : 0;
         const newAfter3DayNotification = after3DayNotification ? 1 : 0;
 
-        const query = `INSERT INTO clients ( userId, clientName, whatsappNumber, clientEmail, clientPassword, product, plan, invoiceStatus, reminderBeforeOne, reminderBeforeTwo, reminderBeforeThree, reminderToday, reminderAfterOne, reminderAfterTwo, reminderAfterThree, comment, startDate, autoRenewal, status ) VALUES ('${userId}', '${name}', '${whatsappNumber}', '${username}', '${password}', '${product}', '${plan}', '${invoiceStatus}', '${newBefore1DayNotification}', '${newBefore2DayNotification}', '${newBefore3DayNotification}', '${newOnDueDateNotification}', '${newAfter1DayNotification}', '${newAfter2DayNotification}', '${newAfter3DayNotification}', '${comments}', '${expiredDate}', '${newAutoRenewal}', '${status}')`;
+        const query = `INSERT INTO clients ( userId, clientName, whatsappNumber, clientEmail, clientPassword, product, plan, invoiceStatus, reminderBeforeOne, reminderBeforeTwo, reminderBeforeThree, reminderToday, reminderAfterOne, reminderAfterTwo, reminderAfterThree, comment, startDate, autoRenewal, status, application, mac, keyApplication ) VALUES ('${userId}', '${name}', '${whatsappNumber}', '${username}', '${password}', '${product}', '${plan}', '${invoiceStatus}', '${newBefore1DayNotification}', '${newBefore2DayNotification}', '${newBefore3DayNotification}', '${newOnDueDateNotification}', '${newAfter1DayNotification}', '${newAfter2DayNotification}', '${newAfter3DayNotification}', '${comments}', '${expiredDate}', '${newAutoRenewal}', '${status}', '${application}', '${mac}', '${keyApplication}')`;
 
         return new Promise<any[]>((resolve, reject) => {
           executeQuery(query)
