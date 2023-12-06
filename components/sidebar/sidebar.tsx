@@ -18,9 +18,8 @@ export const SidebarWrapper = () => {
   const router = useRouter();
   const { collapsed, setCollapsed } = useSidebarContext();
 
-  const role = localStorage.getItem('role');
-  console.log(role)
-
+  const role = localStorage.getItem("role");
+  console.log(role);
 
   return (
     <aside className="h-screen z-[202] sticky top-0">
@@ -65,6 +64,7 @@ export const SidebarWrapper = () => {
               <SidebarItem
                 isActive={router.pathname === "/finance"}
                 title="Finance"
+                href="finance"
                 icon={<ReportsIcon />}
               />
             </SidebarMenu>
@@ -83,15 +83,16 @@ export const SidebarWrapper = () => {
                 href="templateWhatsapp"
               />
             </SidebarMenu>
-            {role === 'admin' && <SidebarMenu title="Owner">
-              <SidebarItem
-                isActive={router.pathname === "/accounts"}
-                title="Account"
-                icon={<DevIcon />}
-                href="accounts"
-              />
-            </SidebarMenu>}
-
+            {role === "admin" && (
+              <SidebarMenu title="Owner">
+                <SidebarItem
+                  isActive={router.pathname === "/accounts"}
+                  title="Account"
+                  icon={<DevIcon />}
+                  href="accounts"
+                />
+              </SidebarMenu>
+            )}
           </div>
         </div>
       </div>

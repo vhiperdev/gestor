@@ -1,40 +1,30 @@
 import { Avatar, Card, CardBody } from "@nextui-org/react";
-import React from "react";
-
-const items = [
-  {
-    name: "Jose Perez",
-    picture: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    amount: "4500 USD",
-    date: "9/20/2021",
-  },
-  {
-    name: "Jose Perez",
-    picture: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    amount: "4500 USD",
-    date: "9/20/2021",
-  },
-  {
-    name: "Jose Perez",
-    picture: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    amount: "4500 USD",
-    date: "9/20/2021",
-  },
-  {
-    name: "Jose Perez",
-    picture: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    amount: "4500 USD",
-    date: "9/20/2021",
-  },
-  {
-    name: "Jose Perez",
-    picture: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    amount: "4500 USD",
-    date: "9/20/2021",
-  },
-];
+import React, { useState, useEffect } from "react";
 
 export const LatestTransaction = () => {
+  const [transaction, setTransaction] = useState([]);
+
+  const handleGetTransaction = async () => {
+    try {
+      await fetch(`/api/finance/getAllFinance`, {
+        method: "GET",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setTransaction(data.data);
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetTransaction();
+  }, []);
+
   return (
     <Card className=" bg-default-50 rounded-xl shadow-md px-3">
       <CardBody className="py-5 gap-4">
@@ -47,25 +37,17 @@ export const LatestTransaction = () => {
         </div>
 
         <div className="flex flex-col gap-6 ">
-          {items.map((item) => (
-            <div key={item.name} className="grid grid-cols-4 w-full">
-              <div className="w-full">
-                <Avatar
-                  isBordered
-                  color="secondary"
-                  src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-                />
-              </div>
-
+          {transaction.slice(-5).map((item) => (
+            <div key={item.id} className="grid grid-cols-4 w-full">
               <span className="text-default-900  font-semibold">
-                {item.name}
+                {item.typeOfSales == 0 ? "Inactive" : "Active"}
               </span>
-              <div>
-                <span className="text-success text-xs">{item.amount}</span>
-              </div>
-              <div>
-                <span className="text-default-500 text-xs">{item.date}</span>
-              </div>
+              <span className="text-default-900  font-semibold">
+                {item.date}
+              </span>
+              <span className="text-default-900  font-semibold">
+                {item.price}
+              </span>
             </div>
           ))}
         </div>
