@@ -23,6 +23,8 @@ import FinanceTable from "./table/table-finance";
 
 export const Finance = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [transaction, setTransaction] = useState([]);
+  const [expTransaction, setExpTransaction] = useState([]);
 
   const [productTotal, setProductTotal] = useState([]);
   const [planTotal, setPlanTotal] = useState([]);
@@ -38,6 +40,22 @@ export const Finance = () => {
         .then((res) => res.json())
         .then((data) => {
           setProductTotal(data.data);
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleGetTransaction = async () => {
+    try {
+      await fetch(`/api/finance/getAllFinance`, {
+        method: "GET",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setTransaction(data.data);
         });
     } catch (error) {
       console.error(error);
@@ -60,6 +78,15 @@ export const Finance = () => {
     }
   };
 
+  const changePropTransaction = () => {
+    const newArray = transaction.map((item) => {
+      return { ...item, typeOfSales: item.typeOfSales == 1 ? "IN" : "OUT" };
+      // Ganti 'Nilai Baru' dengan nilai baru yang ingin Anda berikan kepada properti 'propertyName'
+    });
+
+    setExpTransaction(newArray);
+  };
+
   const getTotalProduct =
     productTotal.length != 0
       ? productTotal.reduce((a, b) => {
@@ -76,18 +103,15 @@ export const Finance = () => {
   useEffect(() => {
     handleGetProduct();
     handleGetPlan();
+    handleGetTransaction();
+    changePropTransaction();
   }, []);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleAddClient = (clientInfo) => {
-    // onAdd(clientInfo);
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
   };
 
   return (
@@ -116,12 +140,12 @@ export const Finance = () => {
         <div className="flex flex-row gap-3.5 flex-wrap">
           <VStack spacing={4} align="start">
             {/* <Button onClick={handleOpenModal}>Add Client</Button> */}
-            {/* <ExportExcel
-              fileName={`${new Date().getFullYear()}-${
+            <ExportExcel
+              fileName={`Report-${new Date().getFullYear()}-${
                 new Date().getMonth() + 1
               }-${new Date().getDate()}`}
-              excelData={clients}
-            /> */}
+              excelData={expTransaction}
+            />
 
             {/* <AddClient
               userId={uid}
@@ -146,7 +170,7 @@ export const Finance = () => {
             </div>
             <div className="flex gap-2.5 py-2 items-center">
               <span className="text-default-900 text-xl font-semibold">
-                ${getTotalProduct - getTotalPlan}
+                ${formatCurrency(getTotalProduct - getTotalPlan)}
               </span>
               <span className="text-white text-xs">of All</span>
             </div>
@@ -165,7 +189,7 @@ export const Finance = () => {
             </div>
             <div className="flex gap-2.5 py-2 items-center">
               <span className="text-default-900 text-xl font-semibold">
-                ${getTotalProduct}
+                ${formatCurrency(getTotalProduct)}
               </span>
               <span className="text-white text-xs">of Product</span>
             </div>
@@ -183,7 +207,7 @@ export const Finance = () => {
             </div>
             <div className="flex gap-2.5 py-2 items-center">
               <span className="text-default-900 text-xl font-semibold">
-                ${getTotalPlan}
+                ${formatCurrency(getTotalPlan)}
               </span>
               <span className="text-white text-xs">of Plan</span>
             </div>
