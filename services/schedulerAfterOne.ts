@@ -1,5 +1,5 @@
 import { createPool, executeQuery } from './connectionDatabase';
-createPool();
+// createPool();
 
 import * as whatsapp from "wa-multi-session";
 
@@ -8,7 +8,6 @@ function replaceVariables(message, replacements) {
   for (const key in replacements) {
     if (Object.prototype.hasOwnProperty.call(replacements, key)) {
       const placeholder = `{${key}}`;
-      console.log("ini kunci",key)
       message = message.replace(new RegExp(placeholder, 'g'), replacements[key]);
     }
   }
@@ -16,7 +15,7 @@ function replaceVariables(message, replacements) {
 }
 
 export const schedulerAfterOne = () => {
-  const queryAfterOne = `SELECT u.username, c.clientPassword, c.clientName, c.clientEmail, c.whatsappNumber, DATE_FORMAT(c.startDate, '%Y-%m-%d') as expired_date, tm.message, p.productName, p.price as product_price, pl.planName, pl.price as plan_price, CASE WHEN c.invoiceStatus = 0 THEN 'Pending' WHEN c.invoiceStatus = 1 THEN 'Paid' ELSE 'Unknown' END AS invoiceStatus FROM clients c JOIN templateMessages tm ON c.userId = tm.userId JOIN plans pl ON c.plan = pl.id JOIN products p ON c.product = p.id JOIN users u ON c.userId = u.id WHERE c.reminderAfterOne = 1 AND tm.codeMessage = 10 AND c.startDate >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND c.startDate < CURDATE();`
+  const queryAfterOne = `SELECT u.username, c.clientPassword, c.clientName, c.clientEmail, c.application, c.mac, c.keyApplication, c.whatsappNumber, DATE_FORMAT(c.startDate, '%Y-%m-%d') as expired_date, tm.message, p.productName, p.price as product_price, pl.planName, pl.price as plan_price, CASE WHEN c.invoiceStatus = 0 THEN 'Pending' WHEN c.invoiceStatus = 1 THEN 'Paid' ELSE 'Unknown' END AS invoiceStatus FROM clients c JOIN templateMessages tm ON c.userId = tm.userId JOIN plans pl ON c.plan = pl.id JOIN products p ON c.product = p.id JOIN users u ON c.userId = u.id WHERE c.reminderAfterOne = 1 AND tm.codeMessage = 10 AND c.startDate >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND c.startDate < CURDATE();`
 
   executeQuery(queryAfterOne)
     .then((results) => {

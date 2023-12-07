@@ -3,7 +3,7 @@ import checkAuthorizationHeader from '../../../services/authorization';
 import { createPool, executeQuery } from '../../../services/connectionDatabase';
 import axios from 'axios';
 
-createPool();
+// createPool();
 
 interface CreateUserRequest {
     email: string;

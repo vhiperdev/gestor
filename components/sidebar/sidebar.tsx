@@ -83,6 +83,20 @@ export const SidebarWrapper = () => {
                 href="templateWhatsapp"
               />
             </SidebarMenu>
+            <SidebarMenu title="Bulk Message">
+              <SidebarItem
+                isActive={router.pathname === "/allbulkmessage"}
+                title="All User"
+                icon={<DevIcon />}
+                href="sessions"
+              />
+              {/* <SidebarItem
+                isActive={router.pathname === "/templatewhatsapp"}
+                title="Template Whatsapp"
+                icon={<ViewIcon />}
+                href="templateWhatsapp"
+              /> */}
+            </SidebarMenu>
             {role === "admin" && (
               <SidebarMenu title="Owner">
                 <SidebarItem

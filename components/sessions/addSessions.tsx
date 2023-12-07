@@ -132,7 +132,7 @@ export const AddSessions = () => {
           setTimeout(() => {
           successNotify("Succesfully Connected");
             window.location.reload();
-          }, 8000);
+          }, 10000);
         } else if (data.code === 400) {
           failedNotify(data.message);
         } else if (data.code === 500) {

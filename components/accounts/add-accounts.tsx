@@ -42,7 +42,6 @@ const AddAcount = ({ isOpen, onClose, onAddUser }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
         if (data.code === 200 || data.code === 201) {
           successNotify('Account successfully added');
         } else if (data.code === 400) {
