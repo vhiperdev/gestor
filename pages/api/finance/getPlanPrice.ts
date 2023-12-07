@@ -7,7 +7,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     checkAuthorizationHeader(
       async (req: NextApiRequest, res: NextApiResponse) => {
-        const query = `select price from transactions WHERE typeOfSales = '0'`;
+        const userId = req.query.userid
+        const query = `select price from transactions WHERE typeOfSales = '0' AND userId = '${userId}'`;
 
         return new Promise<any[]>((resolve, reject) => {
           executeQuery(query)

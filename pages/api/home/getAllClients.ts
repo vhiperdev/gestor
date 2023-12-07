@@ -1,10 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import checkAuthorizationHeader from "../../../services/authorization";
 import { createPool, executeQuery } from "../../../services/connectionDatabase";
+import { startDailyJob } from "../../../services/startScheduler";
 createPool();
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
+    startDailyJob()
     checkAuthorizationHeader(
       async (req: NextApiRequest, res: NextApiResponse) => {
         const uid = req.query.userid;

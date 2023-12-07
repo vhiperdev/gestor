@@ -26,12 +26,15 @@ export const Finance = () => {
   const [transaction, setTransaction] = useState([]);
   const [expTransaction, setExpTransaction] = useState([]);
 
-  const [productTotal, setProductTotal] = useState([]);
-  const [planTotal, setPlanTotal] = useState([]);
+  const [productTotal, setProductTotal] = useState(0);
+  const [planTotal, setPlanTotal] = useState(0);
+
+  const userId = localStorage.getItem('id')
+  const username = localStorage.getItem('name')
 
   const handleGetProduct = async () => {
     try {
-      await fetch(`/api/finance/getProductPrice`, {
+      await fetch(`/api/finance/getProductPrice?userid=${userId}`, {
         method: "GET",
         headers: {
           "X-Authorization": process.env.API_KEY,
@@ -39,15 +42,43 @@ export const Finance = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setProductTotal(data.data);
+          data.data.length != 0
+            ? data.data.reduce((a, b) => {
+              setProductTotal(parseInt(a.price) + parseInt(b.price));
+
+              // return ;
+            })
+            : "";
         });
     } catch (error) {
       console.error(error);
     }
   };
+
+  const handleGetPlan = async () => {
+    try {
+      await fetch(`/api/finance/getPlanPrice?userid=${userId}`, {
+        method: "GET",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          data.data.length != 0
+            ? data.data.reduce((a, b) => {
+              setPlanTotal(parseInt(a.price) + parseInt(b.price));
+            })
+            : "";
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleGetTransaction = async () => {
     try {
-      await fetch(`/api/finance/getAllFinance`, {
+      await fetch(`/api/finance/getAllFinance?userid=${userId}`, {
         method: "GET",
         headers: {
           "X-Authorization": process.env.API_KEY,
@@ -61,44 +92,16 @@ export const Finance = () => {
       console.error(error);
     }
   };
-  const handleGetPlan = async () => {
-    try {
-      await fetch(`/api/finance/getPlanPrice`, {
-        method: "GET",
-        headers: {
-          "X-Authorization": process.env.API_KEY,
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setPlanTotal(data.data);
-        });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
 
   const changePropTransaction = () => {
     const newArray = transaction.map((item) => {
       return { ...item, typeOfSales: item.typeOfSales == 1 ? "IN" : "OUT" };
       // Ganti 'Nilai Baru' dengan nilai baru yang ingin Anda berikan kepada properti 'propertyName'
-    });
-
+    })
+    console.log('duar', newArray)
     setExpTransaction(newArray);
   };
-
-  const getTotalProduct =
-    productTotal.length != 0
-      ? productTotal.reduce((a, b) => {
-          return a.price + b.price;
-        })
-      : "";
-  const getTotalPlan =
-    planTotal.length != 0
-      ? planTotal.reduce((a, b) => {
-          return a.price + b.price;
-        })
-      : "";
 
   useEffect(() => {
     handleGetProduct();
@@ -141,9 +144,8 @@ export const Finance = () => {
           <VStack spacing={4} align="start">
             {/* <Button onClick={handleOpenModal}>Add Client</Button> */}
             <ExportExcel
-              fileName={`Report-${new Date().getFullYear()}-${
-                new Date().getMonth() + 1
-              }-${new Date().getDate()}`}
+              fileName={`Finance - ${username} - ${new Date().getFullYear()}-${new Date().getMonth() + 1
+                }-${new Date().getDate()}`}
               excelData={expTransaction}
             />
 
@@ -170,7 +172,7 @@ export const Finance = () => {
             </div>
             <div className="flex gap-2.5 py-2 items-center">
               <span className="text-default-900 text-xl font-semibold">
-                ${formatCurrency(getTotalProduct - getTotalPlan)}
+                R${productTotal - planTotal}
               </span>
               <span className="text-white text-xs">of All</span>
             </div>
@@ -189,7 +191,7 @@ export const Finance = () => {
             </div>
             <div className="flex gap-2.5 py-2 items-center">
               <span className="text-default-900 text-xl font-semibold">
-                ${formatCurrency(getTotalProduct)}
+                R${productTotal}
               </span>
               <span className="text-white text-xs">of Product</span>
             </div>
@@ -207,7 +209,7 @@ export const Finance = () => {
             </div>
             <div className="flex gap-2.5 py-2 items-center">
               <span className="text-default-900 text-xl font-semibold">
-                ${formatCurrency(getTotalPlan)}
+                R${planTotal}
               </span>
               <span className="text-white text-xs">of Plan</span>
             </div>

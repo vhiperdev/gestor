@@ -204,7 +204,7 @@ const AddFinance = ({ isOpen, onClose, onAdd, userId }) => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme="light"
       />
 
       <Modal isOpen={isOpen} onClose={onClose} size="4xl">

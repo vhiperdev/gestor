@@ -90,7 +90,7 @@ const AddAcount = ({ isOpen, onClose, onAddUser }) => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark" />
+        theme="light" />
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>

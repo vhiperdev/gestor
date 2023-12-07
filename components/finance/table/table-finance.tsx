@@ -36,6 +36,8 @@ const FinanceTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [id, setId] = useState();
 
+  const userId = localStorage.getItem('id')
+
   const {
     isOpen: isAddModalOpen,
     onOpen: onAddModalOpen,
@@ -69,7 +71,7 @@ const FinanceTable = () => {
 
   const handleGetTransaction = async () => {
     try {
-      await fetch(`/api/finance/getAllFinance`, {
+      await fetch(`/api/finance/getAllFinance?userid=${userId}`, {
         method: "GET",
         headers: {
           "X-Authorization": process.env.API_KEY,
@@ -163,7 +165,7 @@ const FinanceTable = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme="light"
       />
       <Stack spacing={4}>
         {/* Search Input */}

@@ -284,7 +284,7 @@ const ClientTable = ({ userId }) => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme="light"
       />
       <Stack spacing={4}>
         {/* Search Input */}
