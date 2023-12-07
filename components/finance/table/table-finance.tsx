@@ -52,6 +52,15 @@ const FinanceTable = () => {
     onClose: onAutoRenewalModalClose,
   } = useDisclosure();
   const [notes, setNotes] = useState("");
+  // let newValue = 1; // Menyimpan nilai yang akan digunakan untuk properti 'a'
+
+  // const newArray = transaction.map((item) => {
+  //   const updatedItem = { ...item, typeOfSales: newValue };
+  //   newValue = 1 - newValue; // Mengubah nilai newValue antara 0 dan 1 secara bergantian
+  //   return updatedItem;
+  // });
+
+  // setTransaction(newArray);
 
   useEffect(() => {
     // handleClientsApi();
@@ -68,47 +77,16 @@ const FinanceTable = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setTransaction(data.data);
+          const updatedState = data.data.map((item, index) => {
+            return { ...item, typeOfSales: index % 2 };
+          });
+
+          setTransaction(updatedState);
         });
     } catch (error) {
       console.error(error);
     }
   };
-
-  
-
-  function getFormattedToday() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, "0");
-    const day = today.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  const uid = localStorage.getItem("id");
-  // /api/plan/getAllPlan?userid=${uid}
-
-  // const handleClientsApi = async () => {
-  //   try {
-  //     await fetch(`/api/clients/getAllClient?userid=${uid}`, {
-  //       method: "GET",
-  //       headers: {
-  //         "X-Authorization": process.env.API_KEY,
-  //       },
-  //     })
-  //       .then((res) => res.json())
-  //       .then((data) => setClients(data.data));
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  
-
-  const currentDate = new Date();
-
-  // const filteredClients = clients.filter((client) =>
-  //   client.name.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
 
   const handleAutoRenewal = (client) => {
     setId(client.id);
@@ -143,44 +121,12 @@ const FinanceTable = () => {
 
     onAutoRenewalModalClose();
   };
-  // const handleSaveEdit = () => {
-  //   fetch("/api/clients/editClient", {
-  //     method: "PUT",
-  //     headers: {
-  //       "X-Authorization": process.env.API_KEY,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(editedClient),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       if (data.code === 200) {
-  //         successNotify("Plan successfully edited");
-  //       } else if (data.code === 400) {
-  //         failedNotify(data.message);
-  //       } else if (data.code === 500) {
-  //         failedNotify(data.sqlMessage);
-  //       }
-  //     });
-
-  //   // onClose();
-  // };
-
-  // const handleSave = () => {
-  //   // onSave(editedClientInfo);
-  //   onAddModalOpen();
-  // };
 
   const getStatusColor = (status) => {
     if (status === "1") return "green";
     if (status === "0") return "yellow";
     return "black"; // default color
   };
-
-  // const isExpired = (date) => {
-  //   const expiredDate = new Date(date);
-  //   return currentDate > expiredDate;
-  // };
 
   const successNotify = (message) => {
     toast.success(message, {
@@ -239,31 +185,33 @@ const FinanceTable = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {transaction.map((client) => (
-              <Tr key={client.id}>
-                {/* <Td>{client.typeOfSales }</Td> */}
-                <Td>
-                  <Badge
-                    colorScheme={client.typeOfSales == "1" ? "green" : "red"}
-                  >
-                    {client.typeOfSales == "1" ? "IN" : "OUT"}
-                  </Badge>
-                </Td>
-                <Td>{moment(client.date).format('MMM Do YY')}</Td>
-                <Td>{client.notes}</Td>
-                <Td>{formatCurrency(client.price)}</Td>
+            {transaction.map((client) => {
+              return (
+                <Tr key={client.id}>
+                  {/* <Td>{client.typeOfSales }</Td> */}
+                  <Td>
+                    <Badge
+                      colorScheme={client.typeOfSales == "1" ? "green" : "red"}
+                    >
+                      {client.typeOfSales == "1" ? "IN" : "OUT"}
+                    </Badge>
+                  </Td>
+                  <Td>{moment(client.date).format("MMM Do YY")}</Td>
+                  <Td>{client.notes}</Td>
+                  <Td>{formatCurrency(client.price)}</Td>
 
-                <Td>
-                  <IconButton
-                    icon={<FaEdit />}
-                    colorScheme="blue"
-                    onClick={() => handleAutoRenewal(client)}
-                    mr={2}
-                    aria-label={""}
-                  />
-                </Td>
-              </Tr>
-            ))}
+                  <Td>
+                    <IconButton
+                      icon={<FaEdit />}
+                      colorScheme="blue"
+                      onClick={() => handleAutoRenewal(client)}
+                      mr={2}
+                      aria-label={""}
+                    />
+                  </Td>
+                </Tr>
+              );
+            })}
           </Tbody>
         </Table>
 
