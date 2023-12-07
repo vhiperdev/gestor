@@ -34,7 +34,7 @@ const executeQuery = (query: string, values: any[] = []): Promise<any> => {
         reject(err);
       } else {
         resolve(results);
-        pool.end()
+        // pool.end()
       }
     });
   });

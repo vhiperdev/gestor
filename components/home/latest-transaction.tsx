@@ -1,4 +1,5 @@
 import { Avatar, Card, CardBody } from "@nextui-org/react";
+import moment from "moment";
 import React, { useState, useEffect } from "react";
 
 export const LatestTransaction = () => {
@@ -21,6 +22,13 @@ export const LatestTransaction = () => {
     }
   };
 
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
+
   useEffect(() => {
     handleGetTransaction();
   }, []);
@@ -40,13 +48,13 @@ export const LatestTransaction = () => {
           {transaction.slice(-5).map((item) => (
             <div key={item.id} className="grid grid-cols-4 w-full">
               <span className="text-default-900  font-semibold">
-                {item.typeOfSales == 0 ? "Inactive" : "Active"}
+                {item.typeOfSales == 0 ? "OUT" : "IN"}
               </span>
               <span className="text-default-900  font-semibold">
-                {item.date}
+                {moment(item.date).format('MMM Do YY, h:mm:ss a')}
               </span>
               <span className="text-default-900  font-semibold">
-                {item.price}
+                {formatCurrency(item.price)}
               </span>
             </div>
           ))}
