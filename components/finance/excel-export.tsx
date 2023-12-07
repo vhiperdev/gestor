@@ -23,7 +23,7 @@ const ExportExcel: any = ({ excelData, fileName }) => {
 
   return (
     <>
-      <Button onClick={() => exportToExcel()}>ExportExcel</Button>
+      <Button onClick={() => exportToExcel()}>Export to Excel</Button>
     </>
   );
 };
