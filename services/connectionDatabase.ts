@@ -33,8 +33,8 @@ const executeQuery = (query: string, values: any[] = []): Promise<any> => {
         console.error('Error executing MySQL query:', err);
         reject(err);
       } else {
-        pool.end()
         resolve(results);
+        pool.end()
       }
     });
   });

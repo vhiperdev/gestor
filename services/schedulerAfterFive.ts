@@ -1,5 +1,5 @@
 import { createPool, executeQuery } from './connectionDatabase';
-// createPool();
+createPool();
 
 import * as whatsapp from "wa-multi-session";
 

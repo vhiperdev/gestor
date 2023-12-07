@@ -85,10 +85,10 @@ export const SidebarWrapper = () => {
             </SidebarMenu>
             <SidebarMenu title="Bulk Message">
               <SidebarItem
-                isActive={router.pathname === "/allbulkmessage"}
-                title="All User"
+                isActive={router.pathname === "/allclientbulkmessage"}
+                title="All Clients"
                 icon={<DevIcon />}
-                href="sessions"
+                href="allclientbulkmessage"
               />
               {/* <SidebarItem
                 isActive={router.pathname === "/templatewhatsapp"}
