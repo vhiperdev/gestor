@@ -29,6 +29,7 @@ import {
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import moment from "moment";
 
 const FinanceTable = () => {
   const [transaction, setTransaction] = useState([]);
@@ -52,6 +53,11 @@ const FinanceTable = () => {
   } = useDisclosure();
   const [notes, setNotes] = useState("");
 
+  useEffect(() => {
+    // handleClientsApi();
+    handleGetTransaction();
+  }, []);
+
   const handleGetTransaction = async () => {
     try {
       await fetch(`/api/finance/getAllFinance`, {
@@ -68,6 +74,8 @@ const FinanceTable = () => {
       console.error(error);
     }
   };
+
+  
 
   function getFormattedToday() {
     const today = new Date();
@@ -94,10 +102,7 @@ const FinanceTable = () => {
   //     console.error(error);
   //   }
   // };
-  useEffect(() => {
-    // handleClientsApi();
-    handleGetTransaction();
-  }, []);
+  
 
   const currentDate = new Date();
 
@@ -193,6 +198,13 @@ const FinanceTable = () => {
     });
   };
 
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
+
   return (
     <>
       <ToastContainer
@@ -209,12 +221,12 @@ const FinanceTable = () => {
       />
       <Stack spacing={4}>
         {/* Search Input */}
-        <Input
+        {/* <Input
           type="text"
           placeholder="Search Client"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        /> */}
 
         {/* Table */}
         <Table variant="simple">
@@ -234,12 +246,12 @@ const FinanceTable = () => {
                   <Badge
                     colorScheme={client.typeOfSales == "1" ? "green" : "red"}
                   >
-                    {client.typeOfSales == "1" ? "Active" : "Inactive"}
+                    {client.typeOfSales == "1" ? "IN" : "OUT"}
                   </Badge>
                 </Td>
-                <Td>{client.date}</Td>
+                <Td>{moment(client.date).format('MMM Do YY')}</Td>
                 <Td>{client.notes}</Td>
-                <Td>{client.price}</Td>
+                <Td>{formatCurrency(client.price)}</Td>
 
                 <Td>
                   <IconButton

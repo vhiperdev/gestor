@@ -289,7 +289,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   >
                     {plans.map((option) => (
                       <option key={option.id} value={option.id}>
-                        {option.planName}
+                        {option.planName} ({formatCurrency(option.price)})
                       </option>
                     ))}
                   </Select>
