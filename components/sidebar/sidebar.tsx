@@ -10,6 +10,7 @@ import { DevIcon } from "../icons/sidebar/dev-icon";
 import { ViewIcon } from "../icons/sidebar/view-icon";
 import { SettingsIcon } from "../icons/sidebar/settings-icon";
 import { SidebarItem } from "./sidebar-item";
+import { MdMessage } from "react-icons/md";
 import { SidebarMenu } from "./sidebar-menu";
 import { useSidebarContext } from "../layout/layout-context";
 import { useRouter } from "next/router";
@@ -87,7 +88,7 @@ export const SidebarWrapper = () => {
               <SidebarItem
                 isActive={router.pathname === "/allclientbulkmessage"}
                 title="All Clients"
-                icon={<DevIcon />}
+                icon={<MdMessage />}
                 href="allclientbulkmessage"
               />
               {/* <SidebarItem
