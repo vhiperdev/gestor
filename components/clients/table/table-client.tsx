@@ -75,7 +75,7 @@ const ClientTable = ({ userId }) => {
     comments: "",
     application: "",
     mac: "",
-    keyApplication: ""
+    keyApplication: "",
   });
   const [editedClient, setEditedClient] = useState({
     clientName: "",
@@ -103,7 +103,7 @@ const ClientTable = ({ userId }) => {
     plan_name: "",
     product_name: "",
     plan_price: "",
-    product_price: ""
+    product_price: "",
   });
 
   function getFormattedToday() {
@@ -288,12 +288,6 @@ const ClientTable = ({ userId }) => {
       />
       <Stack spacing={4}>
         {/* Search Input */}
-        <Input
-          type="text"
-          placeholder="Search Client"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
 
         {/* Table */}
         <Table variant="simple">
@@ -320,7 +314,9 @@ const ClientTable = ({ userId }) => {
                 <Td>{client.whatsappNumber}</Td>
                 <Td>{client.clientEmail}</Td>
                 <Td>{client.clientPassword}</Td>
-                <Td>{client.plan_name} ({formatCurrency(client.plan_price)})</Td>
+                <Td>
+                  {client.plan_name} ({formatCurrency(client.plan_price)})
+                </Td>
                 <Td>{client.product_name}</Td>
                 <Td>{client.application}</Td>
                 <Td>
@@ -329,7 +325,7 @@ const ClientTable = ({ userId }) => {
                   </Badge>
                 </Td>
                 <Td color={isExpired(client.startDate) ? "red" : "green"}>
-                  {moment(client.startDate).format('MMM Do YY, h:mm:ss a')}
+                  {moment(client.startDate).format("MMM Do YY, h:mm:ss a")}
                 </Td>
                 <Td>
                   <Badge colorScheme={client.status ? "green" : "red"}>
@@ -432,7 +428,9 @@ const ClientTable = ({ userId }) => {
                     <Input
                       disabled
                       name="plan"
-                      value={`${editedClient.plan_name} ${formatCurrency(editedClient.plan_price)}`}
+                      value={`${editedClient.plan_name} ${formatCurrency(
+                        editedClient.plan_price
+                      )}`}
                       onChange={handleInputChange}
                       placeholder="Plan"
                     />
@@ -445,7 +443,9 @@ const ClientTable = ({ userId }) => {
                     <Input
                       disabled
                       name="product"
-                      value={`${editedClient.product_name} ${formatCurrency(editedClient.product_price)}`}
+                      value={`${editedClient.product_name} ${formatCurrency(
+                        editedClient.product_price
+                      )}`}
                       onChange={handleInputChange}
                       placeholder="Product"
                     />
@@ -482,7 +482,9 @@ const ClientTable = ({ userId }) => {
                 <Input
                   disabled
                   name="startDate"
-                  value={moment(editedClient.startDate).format('MMM Do YY, h:mm:ss a')}
+                  value={moment(editedClient.startDate).format(
+                    "MMM Do YY, h:mm:ss a"
+                  )}
                   onChange={handleInputChange}
                   placeholder="Expired Date"
                 />
@@ -514,7 +516,7 @@ const ClientTable = ({ userId }) => {
               </VStack>
 
               <HStack spacing="22px">
-                <FormControl width={"2xl"} >
+                <FormControl width={"2xl"}>
                   <FormLabel fontSize="lg" fontWeight="bold">
                     Application
                   </FormLabel>
@@ -526,7 +528,7 @@ const ClientTable = ({ userId }) => {
                   />
                 </FormControl>
 
-                <FormControl >
+                <FormControl>
                   <FormLabel fontSize="lg" fontWeight="bold">
                     Mac
                   </FormLabel>
@@ -539,7 +541,7 @@ const ClientTable = ({ userId }) => {
                 </FormControl>
               </HStack>
 
-              <FormControl >
+              <FormControl>
                 <FormLabel fontSize="lg" fontWeight="bold">
                   Key
                 </FormLabel>
@@ -572,7 +574,12 @@ const ClientTable = ({ userId }) => {
             <ModalCloseButton />
             <ModalBody>
               <FormControl isRequired>
-                <Text mb={2}>Expired Date: {moment(selectedClient.startDate).format('MMM Do YY, h:mm:ss a')}</Text>
+                <Text mb={2}>
+                  Expired Date:{" "}
+                  {moment(selectedClient.startDate).format(
+                    "MMM Do YY, h:mm:ss a"
+                  )}
+                </Text>
                 <Input
                   type="datetime-local"
                   value={renewalDate}

@@ -147,16 +147,6 @@ const PlanTable = ({ userId }) => {
 
   return (
     <>
-      <InputGroup mb={4}>
-        <InputLeftElement pointerEvents="none" children={<FaSearch />} />
-        <Input
-          type="text"
-          placeholder="Search Plan"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </InputGroup>
-
       <Table variant="simple">
         <Thead>
           <Tr>

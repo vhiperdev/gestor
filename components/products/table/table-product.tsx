@@ -134,16 +134,6 @@ const ProductTable = () => {
 
   return (
     <>
-      <InputGroup mb={4}>
-        <InputLeftElement pointerEvents="none" children={<FaSearch />} />
-        <Input
-          type="text"
-          placeholder="Search Product"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </InputGroup>
-
       <Table variant="simple">
         <Thead>
           <Tr>
