@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 
 export const LatestTransaction = () => {
   const [transaction, setTransaction] = useState([]);
+  const uid = localStorage.getItem("id");
 
   const handleGetTransaction = async () => {
     try {
-      await fetch(`/api/finance/getAllFinance`, {
+      await fetch(`/api/finance/getAllFinance?userid=${uid}`, {
         method: "GET",
         headers: {
           "X-Authorization": process.env.API_KEY,
@@ -51,7 +52,7 @@ export const LatestTransaction = () => {
                 {item.typeOfSales == 0 ? "OUT" : "IN"}
               </span>
               <span className="text-default-900  font-semibold">
-                {moment(item.date).format('MMM Do YY, h:mm:ss a')}
+                {moment(item.date).format("MMM Do YY, h:mm:ss a")}
               </span>
               <span className="text-default-900  font-semibold">
                 {formatCurrency(item.price)}
