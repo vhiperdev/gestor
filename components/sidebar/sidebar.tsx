@@ -91,12 +91,18 @@ export const SidebarWrapper = () => {
                 icon={<MdMessage />}
                 href="allclientbulkmessage"
               />
-              {/* <SidebarItem
-                isActive={router.pathname === "/templatewhatsapp"}
-                title="Template Whatsapp"
+              <SidebarItem
+                isActive={router.pathname === "/allproducts"}
+                title="All Products"
                 icon={<ViewIcon />}
-                href="templateWhatsapp"
-              /> */}
+                href="allproducts"
+              />
+              <SidebarItem
+                isActive={router.pathname === "/allexpireddate"}
+                title="All exp date"
+                icon={<ViewIcon />}
+                href="allexpireddate"
+              />
             </SidebarMenu>
             {role === "admin" && (
               <SidebarMenu title="Owner">

@@ -30,10 +30,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         const sessionName = req.body.session;
         const message = req.body.message;
         const userId = req.body.userId;
+        const date = req.body.date;
 
-        const queryAfterOne = `SELECT u.username, c.clientPassword, c.clientName, c.clientEmail, c.application, c.mac, c.keyApplication, c.whatsappNumber, DATE_FORMAT(c.startDate, '%Y-%m-%d') as expired_date, p.productName, p.price as product_price, pl.planName, pl.price as plan_price FROM clients c JOIN plans pl ON c.plan = pl.id JOIN products p ON c.product = p.id JOIN users u ON c.userId = u.id WHERE c.userId = '${userId}'`;
-
-        // const queryGetClientData = `select * from clients WHERE userId = '${userId}' `;
+        const queryAfterOne = `SELECT u.username, c.clientPassword, c.clientName, c.clientEmail, c.application, c.mac, c.keyApplication, c.whatsappNumber, DATE_FORMAT(c.startDate, '%Y-%m-%d') as expired_date, p.productName, p.price as product_price, pl.planName, pl.price as plan_price FROM clients c JOIN plans pl ON c.plan = pl.id JOIN products p ON c.product = p.id JOIN users u ON c.userId = u.id WHERE c.userId = '${userId}' AND startDate = '${date.slice(
+          0,
+          10
+        )}'`;
 
         //Check message data data from Body
         if (message == null) {
@@ -50,7 +52,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             executeQuery(queryAfterOne).then((results) => {
               const lengthResult = results.length;
 
-              // console.log(results)
+              console.log(results);
               if (lengthResult != 0) {
                 results.forEach(async (item, index) => {
                   let sessionName = item["username"];
@@ -84,6 +86,21 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
                   let modifiedMessage = replaceVariables(message, replacements);
 
                   sendMessage(sessionName, whatsappNumber, modifiedMessage);
+
+                  // send message to whatsapp
+                  // try {
+                  //   const sendMessage = await whatsapp.sendTextMessage({
+                  //     sessionId: sessionName, // session ID
+                  //     to: whatsappNumber, // always add country code (ex: 62)
+                  //     text: message, // message you want to send
+                  //   });
+                  //   res.status(200).json({
+                  //     code: 200,
+                  //     message: "Success Send Message",
+                  //   });
+                  // } catch (error) {
+                  //   console.log(error);
+                  // }
                 });
               }
             });

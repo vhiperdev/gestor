@@ -26,6 +26,7 @@ import {
   FormLabel,
   HStack,
 } from "@chakra-ui/react";
+import { Switch } from "@nextui-org/react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -36,6 +37,23 @@ const ClientTable = ({ userId }) => {
   const [tanggal, setTanggal] = useState(getFormattedToday());
   const [searchTerm, setSearchTerm] = useState("");
   const [id, setId] = useState();
+  const [name, setName] = useState("");
+  const session = localStorage.getItem("name");
+
+  const handleSearch = async () => {
+    try {
+      await fetch(`/api/clients/getByName?userid=${uid}&name=${name}`, {
+        method: "GET",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setClients(data.data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const {
     isOpen: isAddModalOpen,
@@ -88,7 +106,7 @@ const ClientTable = ({ userId }) => {
     invoiceStatus: "0", //0 for pending, 1 for paid
     startDate: "",
     status: "active",
-    autoRenewal: "0", //0 for false. 1 for true
+    autoRenewal: false, //0 for false. 1 for true
     before3DayNotification: false,
     before2DayNotification: false,
     before1DayNotification: false,
@@ -104,6 +122,8 @@ const ClientTable = ({ userId }) => {
     product_name: "",
     plan_price: "",
     product_price: "",
+    screens: "",
+    session,
   });
 
   function getFormattedToday() {
@@ -113,6 +133,10 @@ const ClientTable = ({ userId }) => {
     const day = today.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
+
+  const handleSwitchChange = (name) => {
+    setEditedClient((prevData) => ({ ...prevData, [name]: !prevData[name] }));
+  };
 
   const uid = localStorage.getItem("id");
   // /api/plan/getAllPlan?userid=${uid}
@@ -272,6 +296,8 @@ const ClientTable = ({ userId }) => {
     }).format(value);
   };
 
+  const screens = [1, 2, 3, 4, 5];
+
   return (
     <>
       <ToastContainer
@@ -285,6 +311,15 @@ const ClientTable = ({ userId }) => {
         draggable
         pauseOnHover
         theme="light"
+      />
+      <Input
+        type="text"
+        placeholder="Search by name"
+        onChange={(e) => setName(e.target.value)}
+        onKeyDown={(e) => {
+          // setName(e.target.value);
+          if (e.key === "Enter") handleSearch();
+        }}
       />
       <Stack spacing={4}>
         {/* Search Input */}
@@ -480,13 +515,11 @@ const ClientTable = ({ userId }) => {
                   Expired Date
                 </Text>
                 <Input
-                  disabled
                   name="startDate"
-                  value={moment(editedClient.startDate).format(
-                    "MMM Do YY, h:mm:ss a"
-                  )}
+                  type="datetime-local"
+                  value={editedClient.startDate}
                   onChange={handleInputChange}
-                  placeholder="Expired Date"
+                  min={getFormattedToday()}
                 />
 
                 <Text fontSize="lg" fontWeight="bold">
@@ -502,17 +535,35 @@ const ClientTable = ({ userId }) => {
                   <option value="0">Inactive</option>
                 </Select>
 
-                <Text fontSize="lg" fontWeight="bold">
-                  Auto Renewal Status
-                </Text>
-                <Select
-                  name="autoRenewal"
-                  value={editedClient.autoRenewal}
-                  onChange={handleInputChange}
-                >
-                  <option value="1">Active</option>
-                  <option value="0">Inactive</option>
-                </Select>
+                <FormControl isRequired>
+                  <FormLabel fontSize="lg" fontWeight="bold">
+                    Screens
+                  </FormLabel>
+                  <Select
+                    name="screens"
+                    value={editedClient.screens}
+                    onChange={handleInputChange}
+                    placeholder="Select an Screens"
+                  >
+                    {screens.map((option, ind) => (
+                      <option key={ind} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <HStack spacing="22px">
+                  <FormControl mb={4}>
+                    <FormLabel>Auto Renewal</FormLabel>
+                    <Switch
+                      color="success"
+                      // isChecked={newClientInfo.autoRenewal}
+                      isSelected={editedClient.autoRenewal}
+                      onChange={() => handleSwitchChange("autoRenewal")}
+                    />
+                  </FormControl>
+                </HStack>
               </VStack>
 
               <HStack spacing="22px">

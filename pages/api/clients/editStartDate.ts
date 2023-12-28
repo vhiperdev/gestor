@@ -37,6 +37,27 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return new Promise<any[]>((resolve, reject) => {
           executeQuery(query)
             .then((results) => {
+              executeQuery(
+                `SELECT price FROM products WHERE id = '${product}'`
+              ).then((result) => {
+                const isi = result[0]["price"];
+
+                executeQuery(
+                  `INSERT INTO transactions (userId, typeOfSales, date, notes, price) VALUES ('${userId}', '1', '${new Date().getFullYear()}-${
+                    new Date().getMonth() + 1
+                  }-${new Date().getDate()}', '', '${isi}')`
+                );
+              });
+              executeQuery(`SELECT price FROM plans WHERE id= '${plan}'`).then(
+                (result) => {
+                  const isi2 = result[0]["price"];
+                  executeQuery(
+                    `INSERT INTO transactions (userId, typeOfSales, date, notes, price) VALUES ('${userId}', '0', '${new Date().getFullYear()}-${
+                      new Date().getMonth() + 1
+                    }-${new Date().getDate()}', '', '${isi2}')`
+                  );
+                }
+              );
               res.status(200).json({
                 code: 200,
                 message: "OK",

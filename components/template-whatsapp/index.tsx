@@ -28,57 +28,55 @@ import {
   AccordionIcon,
   AccordionPanel,
   Code,
-} from '@chakra-ui/react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+} from "@chakra-ui/react";
 
+import CustomModal from "./customModal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const TemplateWhatsapp = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isButtonVisible, setIsButtonVisible] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState({});
-  const [modalContent, setModalContent] = useState('');
-  const [modalId, setModalId] = useState('');
-  const [data, setData] = useState([
-  ]);
+  const [modalContent, setModalContent] = useState("");
+  const [modalId, setModalId] = useState("");
+  const [data, setData] = useState([]);
 
-  const userId = localStorage.getItem('id');
+  const userId = localStorage.getItem("id");
 
   const generateTitle = (code) => {
-    if (code == '100') {
-      return 'Today Expiration';
-    } else if (code == '3') {
-      return 'Three Days Before Expiration'
-    } else if (code == '2') {
-      return 'Two Days Before Expiration'
-    } else if (code == '1') {
-      return 'One Days Before Expiration'
-    } else if (code == '10') {
-      return 'One Days After Expiration'
-    } else if (code == '30') {
-      return 'Three Days Before Expiration'
-    } else if (code == '50') {
-      return 'Five Days Before Expiration'
+    if (code == "100") {
+      return "Today Expiration";
+    } else if (code == "3") {
+      return "Three Days Before Expiration";
+    } else if (code == "2") {
+      return "Two Days Before Expiration";
+    } else if (code == "1") {
+      return "One Days Before Expiration";
+    } else if (code == "10") {
+      return "One Days After Expiration";
+    } else if (code == "30") {
+      return "Three Days Before Expiration";
+    } else if (code == "50") {
+      return "Five Days Before Expiration";
     } else {
-      return 'Invalid code'; // Kode tidak valid
+      return "Invalid code"; // Kode tidak valid
     }
-
-
   };
 
   const collapseContent = [
-    '{name} = client name',
-    '{username} = username',
-    '{whatsapp} = whatsapp number',
-    '{password} = password',
-    '{invoice_status} = status invoice',
-    '{product} = product',
-    '{plan} = plan',
-    '{expired_date} = expired date',
-    '{application} = application name',
-    '{mac} = mac application',
-    '{key} = key application',
+    "{name} = client name",
+    "{username} = username",
+    "{whatsapp} = whatsapp number",
+    "{password} = password",
+    "{invoice_status} = status invoice",
+    "{product} = product",
+    "{plan} = plan",
+    "{expired_date} = expired date",
+    "{application} = application name",
+    "{mac} = mac application",
+    "{key} = key application",
   ];
 
   const handleOpenModal = (item) => {
@@ -91,29 +89,28 @@ export const TemplateWhatsapp = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setModalData({});
-    setModalContent('');
+    setModalContent("");
   };
 
   const handleSave = () => {
-
     const updateMessage = {
-      "id": modalId,
-      "message": modalContent
-    }
+      id: modalId,
+      message: modalContent,
+    };
 
     fetch(`/api/templateWhatsapp/updateMessage`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'X-Authorization': process.env.API_KEY,
-        'Content-Type': 'application/json'
+        "X-Authorization": process.env.API_KEY,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(updateMessage),
     })
       // .then((res) => res.json())
       .then((data) => {
-        console.log(data)
+        console.log(data);
         if (data.status === 204) {
-          successNotify('Successfully Updated');
+          successNotify("Successfully Updated");
         } else if (data.status == 500) {
           failedNotify("Internal Server Error");
         } else if (data.status == 503) {
@@ -124,14 +121,13 @@ export const TemplateWhatsapp = () => {
 
   //
 
-
   useEffect(() => {
     getTemplateWhatsapp();
   }, []);
 
   const successNotify = (message) => {
     toast.success(message, {
-      position: toast.POSITION.TOP_RIGHT
+      position: toast.POSITION.TOP_RIGHT,
     });
     setTimeout(() => {
       window.location.reload();
@@ -144,19 +140,20 @@ export const TemplateWhatsapp = () => {
     });
   };
 
-
-
   const getTemplateWhatsapp = async () => {
-    fetch(`/api/templateWhatsapp/getTemplateWhatsappByUserId?userId=${userId}`, {
-      method: 'GET',
-      headers: {
-        'X-Authorization': process.env.API_KEY,
-        'Content-Type': 'application/json'
+    fetch(
+      `/api/templateWhatsapp/getTemplateWhatsappByUserId?userId=${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+          "Content-Type": "application/json",
+        },
       }
-    })
+    )
       .then((res) => res.json())
       .then((data) => {
-        setData(data.data)
+        setData(data.data);
         // if (data.data === process.env.SESSION_NAME) {
         //   setIsButtonVisible(false);
         // } else if (data.data != process.env.SESSION_NAME) {
@@ -164,10 +161,8 @@ export const TemplateWhatsapp = () => {
         // } else if (data.code === 404) {
         //   setIsButtonVisible(true);
         // }
-
       });
   };
-
 
   return (
     <>
@@ -181,7 +176,8 @@ export const TemplateWhatsapp = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light" />
+        theme="light"
+      />
 
       <div className="my-14 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
         <ul className="flex">
@@ -205,10 +201,9 @@ export const TemplateWhatsapp = () => {
 
         <h3 className="text-xl font-semibold">Templates Manager</h3>
         <div className="flex justify-between flex-wrap gap-4 items-center">
-          <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-          </div>
-
+          <div className="flex items-center gap-3 flex-wrap md:flex-nowrap"></div>
         </div>
+        <CustomModal />
         <ChakraProvider>
           <Container mt={5}>
             {data.map((item) => (
@@ -234,7 +229,7 @@ export const TemplateWhatsapp = () => {
                 <ModalCloseButton />
                 <ModalBody>
                   <Textarea
-                    minH={`${modalContent.split('\n').length * 1.5}rem`}
+                    minH={`${modalContent.split("\n").length * 1.5}rem`}
                     value={modalContent}
                     onChange={(e) => setModalContent(e.target.value)}
                   />
@@ -255,7 +250,12 @@ export const TemplateWhatsapp = () => {
                     </AccordionButton>
                     <AccordionPanel pb={4}>
                       {collapseContent.map((text, index) => (
-                        <Code key={index} colorScheme="green" p={1} display="block">
+                        <Code
+                          key={index}
+                          colorScheme="green"
+                          p={1}
+                          display="block"
+                        >
                           {text}
                         </Code>
                       ))}
@@ -268,6 +268,5 @@ export const TemplateWhatsapp = () => {
         </ChakraProvider>
       </div>
     </>
-
   );
 };

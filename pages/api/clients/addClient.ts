@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import checkAuthorizationHeader from "../../../services/authorization";
 import { createPool, executeQuery } from "../../../services/connectionDatabase";
+import * as whatsapp from "wa-multi-session";
 createPool();
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -30,6 +31,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           application,
           mac,
           keyApplication,
+          session,
+          screens,
         } = req.body;
 
         const newAutoRenewal = autoRenewal ? 1 : 0;
@@ -40,8 +43,36 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         const newAfter1DayNotification = after1DayNotification ? 1 : 0;
         const newAfter2DayNotification = after2DayNotification ? 1 : 0;
         const newAfter3DayNotification = after3DayNotification ? 1 : 0;
+        const newExpiredDate = expiredDate.slice(0, 10);
 
-        const query = `INSERT INTO clients ( userId, clientName, whatsappNumber, clientEmail, clientPassword, product, plan, invoiceStatus, reminderBeforeOne, reminderBeforeTwo, reminderBeforeThree, reminderToday, reminderAfterOne, reminderAfterTwo, reminderAfterThree, comment, startDate, autoRenewal, status, application, mac, keyApplication ) VALUES ('${userId}', '${name}', '${whatsappNumber}', '${username}', '${password}', '${product}', '${plan}', '${invoiceStatus}', '${newBefore1DayNotification}', '${newBefore2DayNotification}', '${newBefore3DayNotification}', '${newOnDueDateNotification}', '${newAfter1DayNotification}', '${newAfter2DayNotification}', '${newAfter3DayNotification}', '${comments}', '${expiredDate}', '${newAutoRenewal}', '${status}', '${application}', '${mac}', '${keyApplication}')`;
+        const sendMessage = async (sessionName, whatsappNumber, message) => {
+          try {
+            await whatsapp.sendTextMessage({
+              sessionId: sessionName, // session ID
+              to: whatsappNumber, // always add country code (ex: 62)
+              text: message, // message you want to send
+            });
+          } catch (error) {}
+        };
+
+        if (newAutoRenewal == 1) {
+          // console.log(session, whatsappNumber);
+          executeQuery(
+            `SELECT planName, price FROM plans WHERE id = ${plan}`
+          ).then((result) => {
+            const planName = result[0]["planName"];
+            const price = result[0]["price"];
+            sendMessage(
+              session,
+              whatsappNumber,
+              `📌 Thank you for trusting our work✅ ${name} \n assinatura renovado com sucesso.\n ● Next due date: ${newExpiredDate}● Payment: ${
+                invoiceStatus == 1 ? "Paid" : "Pending"
+              }.\n ● Plan: ${planName}● Value: (R$${price})👥🚦 REFER 1 FRIEND AND GET 1 MONTH FREE`
+            );
+          });
+        }
+
+        const query = `INSERT INTO clients ( userId, clientName, whatsappNumber, clientEmail, clientPassword, product, plan, invoiceStatus, reminderBeforeOne, reminderBeforeTwo, reminderBeforeThree, reminderToday, reminderAfterOne, reminderAfterTwo, reminderAfterThree, comment, startDate, autoRenewal, status, application, mac, keyApplication, screens ) VALUES ('${userId}', '${name}', '55${whatsappNumber}', '${username}', '${password}', '${product}', '${plan}', '${invoiceStatus}', '${newBefore1DayNotification}', '${newBefore2DayNotification}', '${newBefore3DayNotification}', '${newOnDueDateNotification}', '${newAfter1DayNotification}', '${newAfter2DayNotification}', '${newAfter3DayNotification}', '${comments}', '${newExpiredDate}', '${newAutoRenewal}', '${status}', '${application}', '${mac}', '${keyApplication}', '${screens}')`;
 
         return new Promise<any[]>((resolve, reject) => {
           executeQuery(query)
@@ -50,22 +81,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
                 `SELECT price FROM products WHERE id = '${product}'`
               ).then((result) => {
                 const isi = result[0]["price"];
-
-                const todayDate = new Date();
-                executeQuery(
-                  `INSERT INTO transactions (userId, typeOfSales, date, notes, price) VALUES ('${userId}', '1', '${new Date().getFullYear()}-${
-                    new Date().getMonth() + 1
-                  }-${new Date().getDate()}', '', '${isi}')`
-                );
+                for (let i = 0; i < screens; i++) {
+                  executeQuery(
+                    `INSERT INTO transactions (userId, typeOfSales, date, notes, price) VALUES ('${userId}', '1', '${new Date().getFullYear()}-${
+                      new Date().getMonth() + 1
+                    }-${new Date().getDate()}', '', '${isi}')`
+                  );
+                }
               });
               executeQuery(`SELECT price FROM plans WHERE id= '${plan}'`).then(
                 (result) => {
                   const isi2 = result[0]["price"];
-                  executeQuery(
-                    `INSERT INTO transactions (userId, typeOfSales, date, notes, price) VALUES ('${userId}', '0', '${new Date().getFullYear()}-${
-                      new Date().getMonth() + 1
-                    }-${new Date().getDate()}', '', '${isi2}')`
-                  );
+                  for (let i = 0; i < screens; i++) {
+                    executeQuery(
+                      `INSERT INTO transactions (userId, typeOfSales, date, notes, price) VALUES ('${userId}', '0', '${new Date().getFullYear()}-${
+                        new Date().getMonth() + 1
+                      }-${new Date().getDate()}', '', '${isi2}')`
+                    );
+                  }
                 }
               );
               res.status(200).json({

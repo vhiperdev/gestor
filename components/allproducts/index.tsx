@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+
+import React, { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -10,11 +12,10 @@ import {
   Code,
   Box,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
 import { HouseIcon } from "../icons/breadcrumb/house-icon";
 import { UsersIcon } from "../icons/breadcrumb/users-icon";
 import { Card, CardBody, Textarea, Button } from "@nextui-org/react";
-import { Select, SelectItem } from "@nextui-org/select";
+import { Select, SelectItem, SelectSection } from "@nextui-org/select";
 // import { parentData } from "./data";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,9 +23,11 @@ import "react-toastify/dist/ReactToastify.css";
 // minified version is also included
 // import 'react-toastify/dist/ReactToastify.min.css';
 
-export const AllClientBulkMessage = () => {
+export const AllProducts = () => {
   const [message, setMessage] = React.useState("");
   const [numberParent, setNumberParent] = React.useState(new Set([]));
+  const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState("");
   // const [studentInfo, SetStudentInfo] = React.useState([]);
 
   const resolveAfter3Sec = new Promise((resolve) => setTimeout(resolve, 3000));
@@ -34,11 +37,27 @@ export const AllClientBulkMessage = () => {
 
   useEffect(() => {
     StudentInfo();
+    getProduct();
   }, []);
 
   const StudentInfo = async () => {
     //    const data = await fetchAllStudentInfo()
     //    SetStudentInfo(data)
+  };
+
+  const getProduct = async () => {
+    try {
+      await fetch(`/api/product/getAllProduct?userid=${userId}`, {
+        method: "GET",
+        headers: {
+          "X-Authorization": process.env.API_KEY,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setProducts(data.data));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const successNotify = () => {
@@ -59,12 +78,6 @@ export const AllClientBulkMessage = () => {
       pending: "Sending a message",
     });
   };
-
-  const getSelectValue = (value) => {
-    // console.log(value);
-    setNumberParent(value);
-  };
-
   const collapseContent = [
     "{name} = client name",
     "{username} = username",
@@ -78,6 +91,11 @@ export const AllClientBulkMessage = () => {
     "{mac} = mac application",
     "{key} = key application",
   ];
+
+  const getSelectValue = (value) => {
+    // console.log(value);
+    setNumberParent(value);
+  };
 
   const handlerSendMessage = () => {
     const targetParent = Array.from(numberParent);
@@ -94,6 +112,7 @@ export const AllClientBulkMessage = () => {
         session: username,
         message: message,
         userId: userId,
+        idProduct: selectedProduct,
       };
 
       fetch("api/whatsapp/sendMessage", {
@@ -140,6 +159,7 @@ export const AllClientBulkMessage = () => {
         pauseOnHover
         theme="light"
       />
+
       <ul className="flex">
         <li className="flex gap-2">
           <HouseIcon />
@@ -171,6 +191,17 @@ export const AllClientBulkMessage = () => {
         </div>
       </div>
       <div className="max-w-[50rem] mx-auto w-full mt-10">
+        <Select
+          label="Select Client"
+          onChange={(e) => setSelectedProduct(e.target.value)}
+          className="max-w-xs my-5"
+        >
+          {products.map((item, ind) => (
+            <SelectItem key={ind} value={item.id}>
+              {item.productName}
+            </SelectItem>
+          ))}
+        </Select>
         <Card className="py-4">
           <CardBody>
             {/* <Select
@@ -200,6 +231,7 @@ export const AllClientBulkMessage = () => {
               fullWidth={true}
               onChange={(e) => setMessage(e.target.value)}
             />
+
             <Accordion mt={2}>
               <AccordionItem>
                 <AccordionButton>

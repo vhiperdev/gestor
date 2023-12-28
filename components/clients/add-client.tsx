@@ -20,8 +20,10 @@ import {
 import { Switch } from "@nextui-org/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CustomInput from "./customcomponent/custom-input";
 
 const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
+  const session = localStorage.getItem("name");
   const [newClientInfo, setNewClientInfo] = useState({
     name: "",
     userId: userId,
@@ -44,7 +46,9 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
     comments: "",
     application: "",
     mac: "",
-    keyApplication: ""
+    keyApplication: "",
+    session,
+    screens: "",
   });
   const [products, setProducts] = useState([]);
   const [plans, setPlans] = useState([]);
@@ -82,13 +86,11 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
         }
       });
 
-
     // console.log(newClientInfo);
     onClose();
     setTimeout(() => {
       window.location.reload();
     }, 2500);
-
   };
 
   const formatCurrency = (value) => {
@@ -178,7 +180,9 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
       comments: "",
       application: "",
       mac: "",
-      keyApplication: ""
+      keyApplication: "",
+      session: "",
+      screens: "",
     });
   };
 
@@ -199,6 +203,8 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
       price: 5000,
     },
   ];
+
+  const screens = [1, 2, 3, 4, 5];
 
   return (
     <>
@@ -241,12 +247,9 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   <FormLabel fontSize="lg" fontWeight="bold">
                     WhatsApp
                   </FormLabel>
-                  <Input
-                    type="tel"
-                    name="whatsappNumber"
+                  <CustomInput
+                    handleOnChange={handleInputChange}
                     value={newClientInfo.whatsappNumber}
-                    onChange={handleInputChange}
-                    placeholder="Whatsapp Number with (62)"
                   />
                 </FormControl>
               </HStack>
@@ -357,8 +360,26 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                 </Select>
               </FormControl>
 
+              <FormControl isRequired>
+                <FormLabel fontSize="lg" fontWeight="bold">
+                  Screens
+                </FormLabel>
+                <Select
+                  name="screens"
+                  value={newClientInfo.screens}
+                  onChange={handleInputChange}
+                  placeholder="Select an Screens"
+                >
+                  {screens.map((option, ind) => (
+                    <option key={ind} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+
               <HStack spacing="22px">
-                <FormControl width={"2xl"} >
+                <FormControl width={"2xl"}>
                   <FormLabel fontSize="lg" fontWeight="bold">
                     Application
                   </FormLabel>
@@ -370,7 +391,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                   />
                 </FormControl>
 
-                <FormControl >
+                <FormControl>
                   <FormLabel fontSize="lg" fontWeight="bold">
                     Mac
                   </FormLabel>
@@ -383,7 +404,7 @@ const AddClient = ({ isOpen, onClose, onAdd, userId }) => {
                 </FormControl>
               </HStack>
 
-              <FormControl >
+              <FormControl>
                 <FormLabel fontSize="lg" fontWeight="bold">
                   Key
                 </FormLabel>

@@ -36,7 +36,7 @@ const FinanceTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [id, setId] = useState();
 
-  const userId = localStorage.getItem('id')
+  const userId = localStorage.getItem("id");
 
   const {
     isOpen: isAddModalOpen,
@@ -54,20 +54,6 @@ const FinanceTable = () => {
     onClose: onAutoRenewalModalClose,
   } = useDisclosure();
   const [notes, setNotes] = useState("");
-  // let newValue = 1; // Menyimpan nilai yang akan digunakan untuk properti 'a'
-
-  // const newArray = transaction.map((item) => {
-  //   const updatedItem = { ...item, typeOfSales: newValue };
-  //   newValue = 1 - newValue; // Mengubah nilai newValue antara 0 dan 1 secara bergantian
-  //   return updatedItem;
-  // });
-
-  // setTransaction(newArray);
-
-  useEffect(() => {
-    // handleClientsApi();
-    handleGetTransaction();
-  }, []);
 
   const handleGetTransaction = async () => {
     try {
@@ -84,11 +70,16 @@ const FinanceTable = () => {
           });
 
           setTransaction(updatedState);
+          console.log(data);
         });
     } catch (error) {
       console.error(error);
     }
   };
+  useEffect(() => {
+    // handleClientsApi();
+    handleGetTransaction();
+  }, []);
 
   const handleAutoRenewal = (client) => {
     setId(client.id);
@@ -165,18 +156,9 @@ const FinanceTable = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="dark"
       />
       <Stack spacing={4}>
-        {/* Search Input */}
-        {/* <Input
-          type="text"
-          placeholder="Search Client"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        /> */}
-
-        {/* Table */}
         <Table variant="simple">
           <Thead>
             <Tr>

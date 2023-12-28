@@ -3,6 +3,8 @@
 "use client";
 
 import { Button, Input } from "@nextui-org/react";
+import { ToastContainer, toast } from "react-toastify";
+import * as XLSX from "xlsx";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { DotsIcon } from "../icons/accounts/dots-icon";
@@ -15,16 +17,91 @@ import { SettingsIcon } from "../icons/sidebar/settings-icon";
 import { TableWrapper } from "../table/table";
 // import { AddClient } from "./add-client";
 import ClientTable from "./table/table-client";
-import { HStack, VStack } from "@chakra-ui/react";
+import {
+  HStack,
+  VStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import AddClient from "./add-client";
 import ExportExcel from "./excel-export";
 
 export const Clients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [file, setFile] = useState(null);
+  const [jsonData, setJsonData] = useState("");
 
   const [clients, setClients] = useState([]);
   const uid = localStorage.getItem("id");
   const username = localStorage.getItem("name");
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const successNotify = (message) => {
+    toast.success(message, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+    setTimeout(() => {
+      window.location.reload();
+    }, 2500);
+  };
+
+  const failedNotify = (message) => {
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  const handleUpload = () => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
+        console.log(json);
+
+        setJsonData(JSON.stringify(json, null, 2));
+        fetch("/api/clients/importclient", {
+          method: "POST",
+          headers: {
+            "X-Authorization": process.env.API_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ json, userId: uid }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.code === 200) {
+              successNotify("Account successfully added");
+            } else if (data.code === 400) {
+              failedNotify(data.message);
+            } else if (data.code === 500) {
+              failedNotify(data.sqlMessage);
+            }
+          });
+
+        // console.log(newClientInfo);
+        // onClose();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2500);
+      };
+      reader.readAsBinaryString(file);
+    }
+  };
 
   const handleClientsApi = async () => {
     try {
@@ -44,13 +121,18 @@ export const Clients = () => {
     handleClientsApi();
   }, []);
 
-
   const handleOpenModal = () => {
     setIsModalOpen(true);
+  };
+  const handleOpenModal2 = () => {
+    setIsModalOpen2(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+  const handleCloseModal2 = () => {
+    setIsModalOpen2(false);
   };
 
   const handleAddClient = (clientInfo) => {
@@ -89,7 +171,27 @@ export const Clients = () => {
               }-${new Date().getDate()}`}
               excelData={clients}
             />
+            <Button onClick={handleOpenModal2}>Import excel</Button>
 
+            <Modal isOpen={isModalOpen2} onClose={handleCloseModal2}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Choose File</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <input
+                    type="file"
+                    accept=".xls,.xlsx"
+                    onChange={handleFileChange}
+                  />
+                </ModalBody>
+
+                <ModalFooter gap={3}>
+                  <Button onClick={handleCloseModal2}>Close</Button>
+                  <Button onClick={handleUpload}>Import</Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
             <AddClient
               userId={uid}
               isOpen={isModalOpen}
@@ -97,11 +199,9 @@ export const Clients = () => {
               onAdd={handleAddClient}
             />
           </HStack>
-          {/* <Button color="primary" startContent={<ExportIcon />} >
-            Export to CSV
-          </Button> */}
         </div>
       </div>
+
       <div className="max-w-[95rem] mx-auto w-full">
         <ClientTable userId={uid} />
       </div>

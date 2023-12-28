@@ -10,11 +10,13 @@ import {
   Code,
   Box,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
 import { HouseIcon } from "../icons/breadcrumb/house-icon";
 import { UsersIcon } from "../icons/breadcrumb/users-icon";
 import { Card, CardBody, Textarea, Button } from "@nextui-org/react";
-import { Select, SelectItem } from "@nextui-org/select";
+import { Select, SelectItem, SelectSection } from "@nextui-org/select";
+import { Input } from "@chakra-ui/react";
 // import { parentData } from "./data";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,15 +24,30 @@ import "react-toastify/dist/ReactToastify.css";
 // minified version is also included
 // import 'react-toastify/dist/ReactToastify.min.css';
 
-export const AllClientBulkMessage = () => {
+export const AllExpiredDate = () => {
   const [message, setMessage] = React.useState("");
   const [numberParent, setNumberParent] = React.useState(new Set([]));
+  const [selectedDate, setSelectedDate] = useState("");
   // const [studentInfo, SetStudentInfo] = React.useState([]);
 
   const resolveAfter3Sec = new Promise((resolve) => setTimeout(resolve, 3000));
 
   const username = localStorage.getItem("name");
   const userId = localStorage.getItem("id");
+
+  const collapseContent = [
+    "{name} = client name",
+    "{username} = username",
+    "{whatsapp} = whatsapp number",
+    "{password} = password",
+    "{invoice_status} = status invoice",
+    "{product} = product",
+    "{plan} = plan",
+    "{expired_date} = expired date",
+    "{application} = application name",
+    "{mac} = mac application",
+    "{key} = key application",
+  ];
 
   useEffect(() => {
     StudentInfo();
@@ -65,20 +82,6 @@ export const AllClientBulkMessage = () => {
     setNumberParent(value);
   };
 
-  const collapseContent = [
-    "{name} = client name",
-    "{username} = username",
-    "{whatsapp} = whatsapp number",
-    "{password} = password",
-    "{invoice_status} = status invoice",
-    "{product} = product",
-    "{plan} = plan",
-    "{expired_date} = expired date",
-    "{application} = application name",
-    "{mac} = mac application",
-    "{key} = key application",
-  ];
-
   const handlerSendMessage = () => {
     const targetParent = Array.from(numberParent);
     waitNotify();
@@ -94,6 +97,7 @@ export const AllClientBulkMessage = () => {
         session: username,
         message: message,
         userId: userId,
+        date: selectedDate,
       };
 
       fetch("api/whatsapp/sendMessage", {
@@ -140,6 +144,7 @@ export const AllClientBulkMessage = () => {
         pauseOnHover
         theme="light"
       />
+
       <ul className="flex">
         <li className="flex gap-2">
           <HouseIcon />
@@ -171,6 +176,11 @@ export const AllClientBulkMessage = () => {
         </div>
       </div>
       <div className="max-w-[50rem] mx-auto w-full mt-10">
+        <Input
+          className="my-5"
+          onChange={(e) => setSelectedDate(e.target.value)}
+          type="datetime-local"
+        />
         <Card className="py-4">
           <CardBody>
             {/* <Select
@@ -200,6 +210,7 @@ export const AllClientBulkMessage = () => {
               fullWidth={true}
               onChange={(e) => setMessage(e.target.value)}
             />
+
             <Accordion mt={2}>
               <AccordionItem>
                 <AccordionButton>

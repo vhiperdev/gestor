@@ -2,9 +2,7 @@ import mysql, { Connection, Pool, MysqlError } from "mysql";
 import * as fs from "fs";
 import * as path from "path";
 
-const caFilePath = path.resolve('cert', "ca-certificate.crt"); // Ganti dengan nama file CA certificate Anda
-
-
+const caFilePath = path.resolve("cert", "ca-certificate.crt"); // Ganti dengan nama file CA certificate Anda
 
 const dbConfig: mysql.PoolConfig = {
   host: process.env.DATABASE_URL,
@@ -13,9 +11,9 @@ const dbConfig: mysql.PoolConfig = {
   database: process.env.DATABASE_NAME,
   port: process.env.DATABASE_PORT,
   // connectionLimit: 10, // Sesuaikan dengan kebutuhan Anda
-  ssl: {
-    ca: fs.readFileSync(caFilePath),
-  },
+  // ssl: {
+  //   ca: fs.readFileSync(caFilePath),
+  // },
 };
 
 let pool: Pool;
